@@ -15,16 +15,14 @@ laboratory stand, and with associatedc hardware:
 
 Installation
 ------------
-
-h3. Dependencies
-
+### Dependencies
 Requires following software:
 
 * ROS (indigo),
 * RobWork, RobWorkStudio, RobWorkHardware, RobWorkSim,
 * TODO
 
-h3. Installation
+### Installation
 Installation is done in following steps:
 1. Compile and install RobWork
 2. Install and setup ROS
