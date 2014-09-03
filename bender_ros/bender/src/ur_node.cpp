@@ -8,6 +8,10 @@
 #include <ros/ros.h>
 #include <rw/rw.hpp>
 #include <rwhw/universalrobots/URCallBackInterface.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options/option.hpp>
+#include <boost/program_options/parsers.hpp>
 #include <bender/Q.h>
 #include <bender/URStop.h>
 #include <bender/URMoveToQ.h>
@@ -18,6 +22,8 @@
 
 USE_ROBWORK_NAMESPACE;
 using namespace rw;
+using namespace boost::program_options;
+namespace po = boost::program_options;
 
 
 
@@ -105,7 +111,33 @@ bool ur_servo_to_q(bender::URServoToQ::Request& req, bender::URServoToQ::Respons
 
 int main(int argc, char* argv[])
 {
+	// configuration
+	
+	
+	// initialize ROS
 	ros::init(argc, argv, "ur_node");
+	
+	// parse command line options
+	string usage = "This is a script used to generate tasks for a single gripper, simulate them and"
+		" evaluate gripper's performance.\n\n"
+		"Usage:\n"
+		"evaluate-gripper";
+	options_description desc("Options");
+	desc.add_options()
+		("help,h", "help message")
+		("ntargets,t", value<int>(&ntargets)->default_value(0), "number of tasks to generate")
+		("nsamples,s", value<int>(&nsamples)->default_value(0), "number of samples to use")
+		("dwc", value<string>(&dwcFilename)->required(), "dynamic workcell file")
+		("td", value<string>(&tdFilename)->required(), "task description file")
+		("gripper,g", value<string>(&gripperFilename)->required(), "gripper file")
+		("samples", value<string>(), "surface samples file")
+		("out,o", value<string>(), "task file")
+		("nosim", "don't perform simulation")
+		("robustness,r", value<int>(&rtargets), "test robustnesss with s number of targets")
+		("sigma_a", value<double>(&sigma_a)->default_value(8), "Standard deviation in of angle in degrees.")
+        ("sigma_p", value<double>(&sigma_p)->default_value(0.003), "Standard deviation of position in meters.")
+	;
+	variables_map vm;
 	
 	// configure robot communication TODO
 	std::string ip = "192.168.2.4";
@@ -113,6 +145,7 @@ int main(int argc, char* argv[])
 	unsigned port = 30001;
 	std::string script = "urscript1.ur";
 	
+	// establish robot communication
 	URInterface.connect(ip, urport);
 	URInterface.start("192.168.2.8", port, script);
 	
