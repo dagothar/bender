@@ -112,42 +112,33 @@ bool ur_servo_to_q(bender::URServoToQ::Request& req, bender::URServoToQ::Respons
 int main(int argc, char* argv[])
 {
 	// configuration
-	
+	std::string hostIp = "192.168.2.8"; // localhost IP address
+	std::string robotId = "UR1"; // robot ID
+	std::string robotIp = "192.168.2.4"; // IP address of the robot
+	unsigned urport = 30002; // port to use locally
+	unsigned port = 30001; // port to use on robot
+	std::string scriptFilename = "urscript1.ur"; // UR script filename
 	
 	// initialize ROS
 	ros::init(argc, argv, "ur_node");
 	
 	// parse command line options
-	string usage = "This is a script used to generate tasks for a single gripper, simulate them and"
-		" evaluate gripper's performance.\n\n"
+	std::string usage = "This ROS node is responsible for communication & control of UR robot.\n\n"
 		"Usage:\n"
-		"evaluate-gripper";
+		"rosrun bender ur_node";
 	options_description desc("Options");
 	desc.add_options()
 		("help,h", "help message")
-		("ntargets,t", value<int>(&ntargets)->default_value(0), "number of tasks to generate")
-		("nsamples,s", value<int>(&nsamples)->default_value(0), "number of samples to use")
-		("dwc", value<string>(&dwcFilename)->required(), "dynamic workcell file")
-		("td", value<string>(&tdFilename)->required(), "task description file")
-		("gripper,g", value<string>(&gripperFilename)->required(), "gripper file")
-		("samples", value<string>(), "surface samples file")
-		("out,o", value<string>(), "task file")
-		("nosim", "don't perform simulation")
-		("robustness,r", value<int>(&rtargets), "test robustnesss with s number of targets")
-		("sigma_a", value<double>(&sigma_a)->default_value(8), "Standard deviation in of angle in degrees.")
-        ("sigma_p", value<double>(&sigma_p)->default_value(0.003), "Standard deviation of position in meters.")
+		("host", value<std::string>(&hostIp), "local machine IP")
+		("id", value<std::string>(&robotId)->required(), "robot ID (used for identification in ROS)")
+		("id", value<std::string>(&robotIp)->required(), "robot IP address")
+		("script", value<std::string>(&scriptFilename), "UR script filename (default: urscript.ur)")
 	;
-	variables_map vm;
-	
-	// configure robot communication TODO
-	std::string ip = "192.168.2.4";
-	unsigned urport = 30002;
-	unsigned port = 30001;
-	std::string script = "urscript1.ur";
+	variables_map vm;	
 	
 	// establish robot communication
-	URInterface.connect(ip, urport);
-	URInterface.start("192.168.2.8", port, script);
+	URInterface.connect(robotIp, urport);
+	URInterface.start("192.168.2.8", port, scriptFilename);
 	
 	// configure ROS node
 	ros::NodeHandle nh("~");
