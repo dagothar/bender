@@ -1,0 +1,7 @@
+<CollisionSetup>
+	<Exclude>
+		<FramePair first="Stelaz" second="Blat"/>
+		<FramePair first="Blat" second="UR1.Base"/>
+		<FramePair first="Blat" second="UR2.Base"/>
+   </Exclude>
+</CollisionSetup>

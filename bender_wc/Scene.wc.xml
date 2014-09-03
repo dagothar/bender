@@ -1,0 +1,51 @@
+<!-- Bender laboratory stand in room 608 -->
+<WorkCell name="Bender">
+
+	<!-- frame -->
+	<Frame name="Stelaz" refframe="WORLD">
+		<RPY>0 0 0</RPY>
+		<Pos>-0.6 1.2 0</Pos>
+		
+		<Drawable name="StelazGeo" refframe="Stelaz">
+			<RPY>0 0 90</RPY>
+			<Pos>0 0 0</Pos>
+			<Polytope file="geometry/stelaz"/>
+		</Drawable>
+	</Frame>
+	
+	<!-- table -->
+	<Frame name="Blat" refframe="Stelaz">
+		<RPY>0 0 0</RPY>
+		<Pos>0 0 0.72</Pos>
+		
+		<Drawable name="BlatGeo" refframe="Blat">
+			<RPY>0 0 90</RPY>
+			<Pos>0 0 0</Pos>
+			<Polytope file="geometry/blat"/>
+		</Drawable>
+	</Frame>
+	
+	<!-- workcell -->
+	<Frame name="Baza" refframe="Stelaz">
+		<RPY>180 0 0</RPY>
+		<Pos>1.2 0 0.738</Pos>
+	</Frame>
+	
+	<!-- robot 1(L) -->
+	<Frame name="Robot1" refframe="Baza">
+		<RPY>90 0 0</RPY>
+		<Pos>0.06667 1.22667 0</Pos>
+	</Frame>
+	<Include file="UR5/UR1.wc.xml"/>
+	
+	<!-- robot 2(R) -->
+	<Frame name="Robot2" refframe="Baza">
+		<RPY>-90 0 0</RPY>
+		<Pos>1.13333 1.17333 0</Pos>
+	</Frame>
+	<Include file="UR5/UR2.wc.xml"/>
+
+	<!-- collision setup -->
+	<CollisionSetup file="SceneCollisionSetup.xml"/> 
+
+</WorkCell>
