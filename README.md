@@ -7,7 +7,7 @@ bender
 Table of Contents
 -----------------
 
-1. [What is this?][what]
+1. [What is this?] [what]
 
 2. [Contents of the repository][contents]
 
