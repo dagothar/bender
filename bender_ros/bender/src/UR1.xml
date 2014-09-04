@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ur_node>
+	<!-- node id -->
+	<!-- **This is going to be used for identyfying robot in ROS topics!** -->
+	<id>UR1</id>
+	
+	<!-- IP address of the host machine -->
+	<hostIP>192.168.2.8</hostIP>
+	
+	<!-- port number to use locally -->
+	<hostPort>30002</hostPort>
+	
+	<!-- IP address of the robot -->
+	<robotIP>192.168.2.4</robotIP>
+	
+	<!-- port number to use on a robot -->
+	<robotPort>30001</robotPort>
+	
+	<!-- robot script filename -->
+	<robotScript>urscript1.ur</robotScript>
+</ur_node>
