@@ -7,15 +7,15 @@ bender
 Table of Contents
 -----------------
 
-1. [What is this?](#what)
+1. [What is this?](#what is this?)
 
 2. [Contents of the repository][contents]
 
 3. [Installation & setup][setup]
 
 
-[what]: What is this?
---------------------
+What is this?
+-------------
 
 
 [contents]: Contents of the repository
