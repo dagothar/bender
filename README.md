@@ -17,15 +17,13 @@ Table of Contents
 
 What is this?
 -------------
-[up](#table-of-contents)
-
 TODO
+
+[up](#what-is-this) [toc](#table-of-contents)
 
 
 Contents of the repository
 --------------------------
-[up](#table-of-contents)
-
 The package contains:
 
 1. [`bender_plugin`](bender_plugin/README.md) -- RWS plugin for controlling laboratory stand using GUI.
@@ -42,12 +40,14 @@ The package contains:
 
 More information will also be available on wiki.
 
+[up](#contents-of-the-repository) [toc](#table-of-contents)
+
 
 Installation and setup
 ----------------------
-[up](#table-of-contents)
-
 TODO
+
+[up](#installation-and-setup) [toc](#table-of-contents)
 
 
 [but]: http://pb.edu.pl "Białystok University of Technology"
