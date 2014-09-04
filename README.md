@@ -1,6 +1,6 @@
 bender
 ======
-**Description:** Data &amp; code pertaining to research performed on Universal Robots laboratory setup *bender** at [**BUT**][but].
+**Description:** Data &amp; code pertaining to research performed on Universal Robots laboratory setup **bender** at [**BUT**][but].
 
 **Authors:** Adam Wolniakowski
 
@@ -17,11 +17,15 @@ Table of Contents
 
 What is this?
 -------------
+[up](#table-of-contents)
+
 TODO
 
 
 Contents of the repository
 --------------------------
+[up](#table-of-contents)
+
 The package contains:
 
 1. [`bender_plugin`](bender_plugin/README.md) -- RWS plugin for controlling laboratory stand using GUI.
@@ -41,6 +45,8 @@ More information will also be available on wiki.
 
 Installation and setup
 ----------------------
+[up](#table-of-contents)
+
 TODO
 
 

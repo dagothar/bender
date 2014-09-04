@@ -5,7 +5,7 @@ What is this?
 -------------
 This directory contains code for bender ROS package. Package serves to
 facilitate easy communication with Universal Robots installed on the
-laboratory stand, and with associatedc hardware:
+laboratory stand, and with associated hardware:
 
 * UR robots,
 * EVG55 electrical Schunk grippers,
