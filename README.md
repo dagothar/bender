@@ -7,19 +7,19 @@ bender
 Table of Contents
 -----------------
 
-[1. What is this?][what]
+1. [What is this?][what]
 
-[2. Contents of the repository][contents]
+2. [Contents of the repository][contents]
 
-[3. Installation & setup][setup]
+3. [Installation & setup][setup]
 
 
-[what:]What is this?
+[what]: What is this?
 --------------------
 
 
-[contents:]Contents of the repository
--------------------------------------
+[contents]: Contents of the repository
+--------------------------------------
 The package contains:
 
 1. [`bender_plugin`][bender_plugin/README.md] -- RWS plugin for controlling laboratory stand using GUI.
@@ -35,8 +35,8 @@ The package contains:
 **For more detailed information, please see README files at respective directories.**
 
 
-[setup:]Installation & setup
-----------------------------
+[setup]: Installation & setup
+-----------------------------
 TODO
 
 
