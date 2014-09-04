@@ -66,6 +66,7 @@ add_message_files(
 # )
 add_service_files(
   FILES
+  URGetQ.srv
   URStop.srv
   URMoveToQ.srv
   URMoveToT.srv
