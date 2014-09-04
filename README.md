@@ -9,20 +9,20 @@ Table of Contents
 
 1. [What is this?](#what-is-this)
 
-2. [Contents of the repository][contents]
+2. [Contents of the repository](#contents-of-the-repository)
 
-3. [Installation & setup][setup]
+3. [Installation and setup](#installation-and-setup)
 
 
 What is this?
 -------------
 
 
-[contents]: Contents of the repository
---------------------------------------
+Contents of the repository
+--------------------------
 The package contains:
 
-1. [`bender_plugin`][bender_plugin/README.md] -- RWS plugin for controlling laboratory stand using GUI.
+1. [`bender_plugin`](bender_plugin/README.md) -- RWS plugin for controlling laboratory stand using GUI.
 
 2. `bender_ros` -- ROS node for communication with hardware present at the laboratory stand.
 
@@ -35,7 +35,7 @@ The package contains:
 **For more detailed information, please see README files at respective directories.**
 
 
-[setup]: Installation & setup
+[setup]: Installation and setup
 -----------------------------
 TODO
 
