@@ -19,7 +19,7 @@ What is this?
 -------------
 TODO
 
-[up](#what-is-this) [toc](#table-of-contents)
+**Navigate:** [up](#what-is-this) -- [toc](#table-of-contents)
 
 
 Contents of the repository
@@ -40,14 +40,14 @@ The package contains:
 
 More information will also be available on wiki.
 
-[up](#contents-of-the-repository) [toc](#table-of-contents)
+**Navigate:** [up](#contents-of-the-repository) -- [toc](#table-of-contents)
 
 
 Installation and setup
 ----------------------
 TODO
 
-[up](#installation-and-setup) [toc](#table-of-contents)
+**Navigate:** [up](#installation-and-setup) -- [toc](#table-of-contents)
 
 
 [but]: http://pb.edu.pl "Białystok University of Technology"
