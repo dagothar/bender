@@ -165,7 +165,7 @@ def myprog():
 #
 
     #Setup the host name
-    host = "192.168.2.9"
+    host = HOST
     port = PORT
     opened = socket_open(host, port)
     textmsg("Socket Status")
