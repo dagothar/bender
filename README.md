@@ -1,6 +1,7 @@
 bender
 ======
 **Description:** Data &amp; code pertaining to research performed on Universal Robots laboratory setup *bender** at [**BUT**][but].
+
 **Authors:** Adam Wolniakowski
 
 
@@ -16,6 +17,7 @@ Table of Contents
 
 What is this?
 -------------
+TODO
 
 
 Contents of the repository
@@ -24,19 +26,21 @@ The package contains:
 
 1. [`bender_plugin`](bender_plugin/README.md) -- RWS plugin for controlling laboratory stand using GUI.
 
-2. `bender_ros` -- ROS node for communication with hardware present at the laboratory stand.
+2. [`bender_ros`](bender_ros/README.md) -- ROS node for communication with hardware present at the laboratory stand.
 
-3. `bender_wc` -- laboratory stand workcell in RW XML format.
+3. [`bender_wc`](bender_wc/README.md) -- laboratory stand workcell in RW XML format.
 
-4. `docs` -- documentation for the laboratory stand (**Please read this first.**).
+4. [`docs`](docs/README.md) -- documentation for the laboratory stand (**Please read this first.**).
 
-5. `instrukcje` -- exercise instructions for students using the laboratory.
+5. [`instrukcje`](instrukcje/README.md) -- exercise instructions for students using the laboratory.
 
-**For more detailed information, please see README files at respective directories.**
+**For more detailed information, please see README files at respective directories** (just click on links).
+
+More information will also be available on wiki.
 
 
-[setup]: Installation and setup
------------------------------
+Installation and setup
+----------------------
 TODO
 
 
