@@ -1,1 +1,0 @@
-/home/dagothar/sandbox/robwork/trakstar/CMakeFiles/trakstar-test.dir
