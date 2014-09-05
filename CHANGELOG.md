@@ -1,3 +1,10 @@
+05-09-2014
+----------
+* Updated ROS node documentation.
+* Added configuration file for the second robot.
+* You can now use named nodes.
+
+
 04-09-2014
 ----------
 * Updated directory structure and the readme files.
