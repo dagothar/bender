@@ -5,7 +5,7 @@
 	<id>UR1</id>
 	
 	<!-- IP address of the host machine -->
-	<hostIP>192.168.2.8</hostIP>
+	<hostIP>192.168.2.6</hostIP>
 	
 	<!-- port number to use locally -->
 	<hostPort>30002</hostPort>
@@ -15,6 +15,9 @@
 	
 	<!-- port number to use on a robot -->
 	<robotPort>30001</robotPort>
+	
+	<!-- port number for RT interface on a robot -->
+	<robotRTPort>30003</robotRTPort>
 	
 	<!-- robot script filename -->
 	<robotScript>urscript1.ur</robotScript>

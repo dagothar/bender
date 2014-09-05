@@ -56,6 +56,7 @@ find_package(Threads REQUIRED)
 add_message_files(
   FILES
   Q.msg
+  URState.msg
 )
 
 ## Generate services in the 'srv' folder

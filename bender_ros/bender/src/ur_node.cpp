@@ -8,6 +8,7 @@
 #include <ros/ros.h>
 #include <rw/rw.hpp>
 #include <rwhw/universalrobots/URCallBackInterface.hpp>
+#include <rwhw/universalrobots/UniversalRobotsRTLogging.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/option.hpp>
@@ -20,6 +21,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string.hpp>
 #include <bender/Q.h>
+#include <bender/URState.h>
 #include <bender/URGetQ.h>
 #include <bender/URStop.h>
 #include <bender/URMoveToQ.h>
@@ -37,6 +39,7 @@ using namespace boost::property_tree;
 
 
 rwhw::URCallBackInterface URInterface;
+rwhw::UniversalRobotsRTLogging URRTInterface;
 
 
 
@@ -145,6 +148,7 @@ struct URNodeConfiguration
 	unsigned hostPort;
 	std::string robotIP;
 	unsigned robotPort;
+	unsigned robotRTPort;
 	std::string script;
 	
 	/* constructors */
@@ -153,6 +157,7 @@ struct URNodeConfiguration
 		hostIP("192.168.2.8"),
 		hostPort(30002),
 		robotPort(30001),
+		robotRTPort(30003),
 		script("urscript1.ur")
 	{ }
 	
@@ -193,6 +198,11 @@ struct URNodeConfiguration
 			std::string robotPort = root.get_child("robotPort").get_value<std::string>();
 			boost::trim(robotPort);
 			config->robotPort = boost::lexical_cast<unsigned>(robotPort);
+			
+			// read robot rt port
+			std::string robotRTPort = root.get_child("robotRTPort").get_value<std::string>();
+			boost::trim(robotRTPort);
+			config->robotRTPort = boost::lexical_cast<unsigned>(robotRTPort);
 			
 			// read script
 			std::string script = root.get_child("robotScript").get_value<std::string>();
@@ -238,8 +248,13 @@ int main(int argc, char* argv[])
 	std::cout << config << std::endl;
 	
 	// establish robot communication
+	URRTInterface.connect(config.robotIP, config.robotRTPort);
+	URRTInterface.start();
 	URInterface.connect(config.robotIP, config.robotPort);
 	URInterface.startInterface(config.hostIP, config.hostPort, config.script);
+	
+	// advertise topics
+	ros::Publisher urStatePublisher = nh.advertise<bender::URState>("ur_state", 1000);
 	
 	// advertise services
 	ros::ServiceServer urGetQService = nh.advertiseService("ur_get_q", ur_get_q);
@@ -248,9 +263,35 @@ int main(int argc, char* argv[])
 	ros::ServiceServer urMoveTService = nh.advertiseService("ur_move_to_t", ur_move_to_t);
 	ros::ServiceServer urServoQService = nh.advertiseService("ur_servo_to_q", ur_servo_to_q);
 
-	// wait for calls
+	// main loop
 	ROS_INFO("Started.");
-	ros::spin();
+	ros::Rate loop_rate(100);
+	while (ros::ok()) {
+		// get last RT data
+		rwhw::URRTData URData;
+		URData = URRTInterface.getLastData();
+		
+		// extract data
+		rw::math::Q qActual = URData.qActual;
+		
+		// create message
+		bender::URState msg;
+		
+		msg.id = config.id;
+		bender::Q qActualMsg;
+		if (qActual.size() == 6) {
+			for (int i = 0; i < 6; ++i) {
+				qActualMsg.Q.data()[i] = qActual[i];
+			}
+		}
+		msg.qActual = qActualMsg;
+		
+		// publish
+		urStatePublisher.publish(msg);
+		
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
 	
 	return 0;
 }

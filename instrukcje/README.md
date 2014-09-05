@@ -20,7 +20,6 @@ Link: [instrukcja w PDF](ur_pierwsze_kroki/ur_pierwsze_kroki.pdf)
 
 [z powrotem do spisu instrukcji](#spis-instrukcji)
 
---------------------------------------------------
 
 Obsługa panelu
 --------------
@@ -31,4 +30,3 @@ Link: [instrukcja w PDF](ur_obsluga_panelu/ur_obsluga_panelu.pdf)
 
 [z powrotem do spisu instrukcji](#spis-instrukcji)
 
---------------------------------------------------
