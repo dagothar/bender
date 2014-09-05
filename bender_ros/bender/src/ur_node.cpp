@@ -239,7 +239,7 @@ int main(int argc, char* argv[])
 	
 	// establish robot communication
 	URInterface.connect(config.robotIP, config.robotPort);
-	URInterface.start(config.hostIP, config.hostPort, config.script);
+	URInterface.startInterface(config.hostIP, config.hostPort, config.script);
 	
 	// advertise services
 	ros::ServiceServer urGetQService = nh.advertiseService("ur_get_q", ur_get_q);
