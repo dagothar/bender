@@ -277,7 +277,6 @@ int main(int argc, char* argv[])
 		// create message
 		bender::URState msg;
 		
-		msg.id = config.id;
 		bender::Q qActualMsg;
 		if (qActual.size() == 6) {
 			for (int i = 0; i < 6; ++i) {

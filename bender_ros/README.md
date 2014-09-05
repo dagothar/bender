@@ -62,9 +62,9 @@ You should have `roscore` running in one of your terminal windows:
 	
 Make sure the robot is powered up and initialized. Open up another
 terminal window and launch `ur_node`, specifying a link to the robot
-configuration file, e.g:
+configuration file, and a name of the node, e.g:
 
-	rosrun bender ur_node _config:=/path/to/UR1.xml
+	rosrun bender ur_node __name:=ur1 _config:=/path/to/UR1.xml
 	
 The `ur_node` should now be running. From now on, you can use robot services
 and listen to ROS topics, either at terminal, or through other software.
@@ -73,16 +73,18 @@ as in the terminal.
 
 To test out communication, you can try checking out the robot's state:
 
-	rostopic echo /ur_node/ur_state
+	rostopic echo /ur1/ur_state
 	
 This should post a bunch of messages with robot's actual state on your screen.
 Close with *Ctrl+C*.
 
 If you want to try to move robot, try:
 
-	call /ur_node/ur_move_to_q "target:
+	call /ur1/ur_move_to_q "target:
 		Q: [0.0, -1.57, 0.0, -1.57, 0.0, 0.0]
 		speed: 0.1"
+
+**Hint:** You can use TAB completion to get message template and service names.
 
 This should move robot to a safe (initial) configuration.
 
@@ -93,8 +95,6 @@ For more information check [Topics](#topics) and [Services](#services).
 The `ur_node` publishes following topics:
 
 * `ur_state` - contains state information of the robot:
-
- * `string id` - robot ID
  
  * `Q qActual` - current robot joint configuration
 
