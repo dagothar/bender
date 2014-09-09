@@ -14,7 +14,6 @@ using namespace rws;
 
 
 
-
 HypnotoadPlugin::HypnotoadPlugin() :
 	RobWorkStudioPlugin("HypnotoadPlugin", QIcon(":/pa_icon.png"))
 {

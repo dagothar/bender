@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QtGui>
 #include <QTimer>
+//#include "ui_HypnotoadPlugin.h"
 
 
 
@@ -37,4 +38,5 @@ class HypnotoadPlugin : public rws::RobWorkStudioPlugin
 	private slots:
 
 	private:
+		//Ui::HypnotoadWidget ui;
 };

@@ -19,7 +19,6 @@ set(RobWorkStudio_DIR $ENV{RWS_ROOT}/cmake)
 find_package(RobWorkStudio REQUIRED)
 find_package(Threads REQUIRED)
 
-
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
@@ -99,24 +98,31 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+message("!!!!!!!!! ${ROBWORKSTUDIO_INCLUDE_DIRS}")
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${ROBWORK_INCLUDE_DIRS}
   ${ROBWORKSTUDIO_INCLUDE_DIRS}
-  $ENV{RWHW_ROOT}/src
 )
 
 link_directories(
   ${ROBWORK_LIBRARY_DIRS}
   ${ROBWORKSTUDIO_LIBRARY_DIRS}
-  $ENV{RWHW_ROOT}/libs/Release
 )
+
+# Qt stuff
+set(UiFiles src/HypnotoadPlugin.ui)
+set(MocSrcFiles)
+QT4_WRAP_CPP(MocSrcFiles src/HypnotoadPlugin.hpp)
+set(RccSrcFiles)
+QT4_ADD_RESOURCES(RccSrcFiles src/resources.qrc)
+QT4_WRAP_UI(UiHeaders ${UiFiles})
 
 ## Declare a cpp library
 # add_library(hypnotoad
 #   src/${PROJECT_NAME}/hypnotoad.cpp
 # )
-add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp)
+add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp ${MocSrcFiles} ${RccSrcFiles} ${UiHeaders})
 
 ## Declare a cpp executable
 # add_executable(hypnotoad_node src/hypnotoad_node.cpp)
@@ -134,7 +140,6 @@ target_link_libraries(HypnotoadPlugin
   ${catkin_LIBRARIES}
   ${ROBWORK_LIBRARIES}
   ${ROBWORKSTUDIO_LIBRARIES}
-  rwhw_universalrobots
 )
 
 #############
