@@ -3,5 +3,13 @@
 		<FramePair first="Stelaz" second="Blat"/>
 		<FramePair first="Blat" second="UR1.Base"/>
 		<FramePair first="Blat" second="UR2.Base"/>
+		<FramePair first="Blat" second="UR1_ghost.Base"/>
+		<FramePair first="Blat" second="UR2_ghost.Base"/>
+		
+		<!-- UR1 ghost -->
+		<FramePair first="UR1.*" second="UR1_ghost.*"/>
+		
+		<!-- UR2 ghost -->
+		<FramePair first="UR2.*" second="UR2_ghost.*"/>
    </Exclude>
 </CollisionSetup>
