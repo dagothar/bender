@@ -17,8 +17,8 @@ using namespace rws;
 HypnotoadPlugin::HypnotoadPlugin() :
 	RobWorkStudioPlugin("HypnotoadPlugin", QIcon(":/pa_icon.png"))
 {
-    //ui.setupUi(this);
-    //setupGUI();
+    ui.setupUi(this);
+    setupGUI();
 }
 
 
@@ -42,6 +42,12 @@ void HypnotoadPlugin::open(WorkCell* workcell)
 
 
 void HypnotoadPlugin::close()
+{
+}
+
+
+
+void HypnotoadPlugin::setupGUI()
 {
 }
 
