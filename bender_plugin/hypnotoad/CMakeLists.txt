@@ -13,6 +13,11 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+set(RobWork_DIR $ENV{RW_ROOT}/cmake)
+find_package(RobWork REQUIRED)
+set(RobWorkStudio_DIR $ENV{RWS_ROOT}/cmake)
+find_package(RobWorkStudio REQUIRED)
+find_package(Threads REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -96,12 +101,22 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${ROBWORK_INCLUDE_DIRS}
+  ${ROBWORKSTUDIO_INCLUDE_DIRS}
+  $ENV{RWHW_ROOT}/src
+)
+
+link_directories(
+  ${ROBWORK_LIBRARY_DIRS}
+  ${ROBWORKSTUDIO_LIBRARY_DIRS}
+  $ENV{RWHW_ROOT}/libs/Release
 )
 
 ## Declare a cpp library
 # add_library(hypnotoad
 #   src/${PROJECT_NAME}/hypnotoad.cpp
 # )
+add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp)
 
 ## Declare a cpp executable
 # add_executable(hypnotoad_node src/hypnotoad_node.cpp)
@@ -109,11 +124,18 @@ include_directories(
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(hypnotoad_node hypnotoad_generate_messages_cpp)
+add_dependencies(HypnotoadPlugin hypnotoad_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(hypnotoad_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(HypnotoadPlugin
+  ${catkin_LIBRARIES}
+  ${ROBWORK_LIBRARIES}
+  ${ROBWORKSTUDIO_LIBRARIES}
+  rwhw_universalrobots
+)
 
 #############
 ## Install ##

@@ -1,3 +1,8 @@
+09-09-2014
+----------
+* Added ghost robots to workcell.
+
+
 05-09-2014
 ----------
 * Updated ROS node documentation.
