@@ -1,6 +1,7 @@
 09-09-2014
 ----------
 * Added ghost robots to workcell.
+* Started work on Hypnotoad plugin for Bender stand control.
 
 
 05-09-2014
