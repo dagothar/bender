@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "hypnotoad")
+set(hypnotoad_MAINTAINER "dagothar <dagothar@todo.todo>")
+set(hypnotoad_DEPRECATED "")
+set(hypnotoad_VERSION "0.0.0")
+set(hypnotoad_BUILD_DEPENDS "bender" "roscpp" "rospy" "std_msgs")
+set(hypnotoad_RUN_DEPENDS "bender" "roscpp" "rospy" "std_msgs")
+set(hypnotoad_BUILDTOOL_DEPENDS "catkin")

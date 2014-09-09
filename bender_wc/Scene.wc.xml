@@ -38,12 +38,26 @@
 	</Frame>
 	<Include file="UR5/UR1.wc.xml"/>
 	
+	<!-- robot 1(L) ghost -->
+	<Frame name="Robot1_ghost" refframe="Baza">
+		<RPY>90 0 0</RPY>
+		<Pos>0.06667 1.22667 0</Pos>
+	</Frame>
+	<Include file="UR5/UR1_ghost.wc.xml"/>
+	
 	<!-- robot 2(R) -->
 	<Frame name="Robot2" refframe="Baza">
 		<RPY>-90 0 0</RPY>
 		<Pos>1.13333 1.17333 0</Pos>
 	</Frame>
 	<Include file="UR5/UR2.wc.xml"/>
+	
+	<!-- robot 2(R) -->
+	<Frame name="Robot2_ghost" refframe="Baza">
+		<RPY>-90 0 0</RPY>
+		<Pos>1.13333 1.17333 0</Pos>
+	</Frame>
+	<Include file="UR5/UR2_ghost.wc.xml"/>
 
 	<!-- collision setup -->
 	<CollisionSetup file="SceneCollisionSetup.xml"/> 

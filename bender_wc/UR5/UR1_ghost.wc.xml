@@ -20,9 +20,9 @@
 		<AccLimit refjoint="Joint1" max="120"/>
 		
 		<Drawable name="Joint1Geo" refframe="Joint1">
-			<RPY>-90 0 0</RPY>
+			<RPY>0 0 0</RPY>
 			<Pos>0 0 0</Pos>
-			<Polytope file="geometry/czlon1"/>
+			<Polytope file="geometry/czlon1_ghost"/>
 		</Drawable>
 	</Joint>
 	
@@ -35,9 +35,9 @@
 		<AccLimit refjoint="Joint2" max="120"/>
 		
 		<Drawable name="Joint2Geo" refframe="Joint2">
-			<RPY>-90 0 0</RPY>
+			<RPY>0 0 0</RPY>
 			<Pos>0 0 0</Pos>
-			<Polytope file="geometry/czlon2"/>
+			<Polytope file="geometry/czlon2_ghost"/>
 		</Drawable>
 	</Joint>
 	
@@ -50,9 +50,9 @@
 		<AccLimit refjoint="Joint2" max="120"/>
 		
 		<Drawable name="Joint3Geo" refframe="Joint3">
-			<RPY>180 0 180</RPY>
+			<RPY>90 0 180</RPY>
 			<Pos>0 0 0</Pos>
-			<Polytope file="geometry/czlon3"/>
+			<Polytope file="geometry/czlon3_ghost"/>
 		</Drawable>
 	</Joint>
 	
@@ -65,9 +65,9 @@
 		<AccLimit refjoint="Joint4" max="120"/>
 		
 		<Drawable name="Joint4Geo" refframe="Joint4">
-			<RPY>90 0 0</RPY>
+			<RPY>0 0 0</RPY>
 			<Pos>0 0 0</Pos>
-			<Polytope file="geometry/czlon4"/>
+			<Polytope file="geometry/czlon4_ghost"/>
 		</Drawable>
 	</Joint>
 	
@@ -80,9 +80,9 @@
 		<AccLimit refjoint="Joint5" max="120"/>
 		
 		<Drawable name="Joint5Geo" refframe="Joint5">
-			<RPY>0 0 0</RPY>
+			<RPY>90 0 0</RPY>
 			<Pos>0 0 0</Pos>
-			<Polytope file="geometry/czlon4"/>
+			<Polytope file="geometry/czlon4_ghost"/>
 		</Drawable>
 	</Joint>
 	
@@ -97,7 +97,7 @@
 		<Drawable name="Joint6Geo" refframe="Joint6">
 			<RPY>0 0 0</RPY>
 			<Pos>0 0 0</Pos>
-			<Polytope file="geometry/narzedzie"/>
+			<Polytope file="geometry/narzedzie_ghost"/>
 		</Drawable>
 	</Joint>
 

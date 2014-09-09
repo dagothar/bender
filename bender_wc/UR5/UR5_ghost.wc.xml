@@ -1,4 +1,4 @@
-<SerialDevice name="UR2_ghost">
+<SerialDevice name="UR5_ghost">
 	
 	<Frame name="Base" type="Movable">
 		<RPY>0 0 0</RPY>

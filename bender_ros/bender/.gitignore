@@ -9,3 +9,4 @@ Makefile
 CMakeCache.txt/
 CTestTestfile.cmake/
 test_results/
+CTestTestfile.cmake
