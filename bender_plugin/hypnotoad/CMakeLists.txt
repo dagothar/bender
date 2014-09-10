@@ -111,9 +111,9 @@ link_directories(
 )
 
 # Qt stuff
-set(UiFiles src/HypnotoadPlugin.ui)
+set(UiFiles src/SimplePlugin.ui src/HypnotoadPlugin.ui)
 set(MocSrcFiles)
-QT4_WRAP_CPP(MocSrcFiles src/HypnotoadPlugin.hpp)
+QT4_WRAP_CPP(MocSrcFiles src/SimplePlugin.hpp src/HypnotoadPlugin.hpp)
 set(RccSrcFiles)
 QT4_ADD_RESOURCES(RccSrcFiles src/resources.qrc)
 QT4_WRAP_UI(UiHeaders ${UiFiles})
@@ -122,6 +122,7 @@ QT4_WRAP_UI(UiHeaders ${UiFiles})
 # add_library(hypnotoad
 #   src/${PROJECT_NAME}/hypnotoad.cpp
 # )
+add_library(SimplePlugin MODULE src/SimplePlugin.cpp ${MocSrcFiles} ${RccSrcFiles} ${UiHeaders})
 add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp ${MocSrcFiles} ${RccSrcFiles} ${UiHeaders})
 
 ## Declare a cpp executable
@@ -130,12 +131,18 @@ add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp ${MocSrcFiles} ${RccS
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(hypnotoad_node hypnotoad_generate_messages_cpp)
+add_dependencies(SimplePlugin hypnotoad_generate_messages_cpp)
 add_dependencies(HypnotoadPlugin hypnotoad_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(hypnotoad_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(SimplePlugin
+  ${catkin_LIBRARIES}
+  ${ROBWORK_LIBRARIES}
+  ${ROBWORKSTUDIO_LIBRARIES}
+)
 target_link_libraries(HypnotoadPlugin
   ${catkin_LIBRARIES}
   ${ROBWORK_LIBRARIES}
