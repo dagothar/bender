@@ -111,19 +111,23 @@ link_directories(
 )
 
 # Qt stuff
-set(UiFiles src/SimplePlugin.ui src/HypnotoadPlugin.ui)
-set(MocSrcFiles)
-QT4_WRAP_CPP(MocSrcFiles src/SimplePlugin.hpp src/HypnotoadPlugin.hpp)
+set(UiFilesSimple src/SimplePlugin.ui)
+set(UiFilesHypnotoad src/HypnotoadPlugin.ui)
+set(MocSrcFilesSImple)
+set(MocSrcFilesHypnotoad)
+QT4_WRAP_CPP(MocSrcFilesSimple src/SimplePlugin.hpp)
+QT4_WRAP_CPP(MocSrcFilesHypnotoad src/HypnotoadPlugin.hpp)
 set(RccSrcFiles)
 QT4_ADD_RESOURCES(RccSrcFiles src/resources.qrc)
-QT4_WRAP_UI(UiHeaders ${UiFiles})
+QT4_WRAP_UI(UiHeadersSimple ${UiFilesSimple})
+QT4_WRAP_UI(UiHeadersHypnotoad ${UiFilesHypnotoad})
 
 ## Declare a cpp library
 # add_library(hypnotoad
 #   src/${PROJECT_NAME}/hypnotoad.cpp
 # )
-add_library(SimplePlugin MODULE src/SimplePlugin.cpp ${MocSrcFiles} ${RccSrcFiles} ${UiHeaders})
-add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp ${MocSrcFiles} ${RccSrcFiles} ${UiHeaders})
+add_library(SimplePlugin MODULE src/SimplePlugin.cpp ${MocSrcFilesSimple} ${RccSrcFiles} ${UiHeadersSimple})
+add_library(HypnotoadPlugin MODULE src/HypnotoadPlugin.cpp ${MocSrcFilesHypnotoad} ${RccSrcFiles} ${UiHeadersHypnotoad})
 
 ## Declare a cpp executable
 # add_executable(hypnotoad_node src/hypnotoad_node.cpp)

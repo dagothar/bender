@@ -1,0 +1,53 @@
+<IncludeData>
+	<RigidDevice device="UR2">
+		<!-- base -->
+		<KinematicBase frame="Base">
+			<MaterialID>Aluminum</MaterialID>
+		</KinematicBase>
+		
+		<!-- joints -->
+		<RigidJoint joint="Joint1">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="Joint2">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="Joint3">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="Joint4">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="Joint5">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="Joint6">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<!-- force limits -->
+		<ForceLimit joint="Joint1">0.01</ForceLimit>
+		<ForceLimit joint="Joint2">0.01</ForceLimit>
+		<ForceLimit joint="Joint3">0.01</ForceLimit>
+		<ForceLimit joint="Joint4">0.01</ForceLimit>
+		<ForceLimit joint="Joint5">0.01</ForceLimit>
+		<ForceLimit joint="Joint6">0.01</ForceLimit>
+	</RigidDevice>
+</IncludeData>

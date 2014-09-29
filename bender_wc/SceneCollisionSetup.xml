@@ -7,9 +7,9 @@
 		<FramePair first="Blat" second="UR2_ghost.Base"/>
 		
 		<!-- UR1 ghost -->
-		<FramePair first="UR1.*" second="UR1_ghost.*"/>
+		<FramePair first="*" second="UR1_ghost.*"/>
 		
 		<!-- UR2 ghost -->
-		<FramePair first="UR2.*" second="UR2_ghost.*"/>
+		<FramePair first="*" second="UR2_ghost.*"/>
    </Exclude>
 </CollisionSetup>
