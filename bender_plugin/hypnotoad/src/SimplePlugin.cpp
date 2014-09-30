@@ -4,6 +4,8 @@
 #include <rw/common/Exception.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <bender/URMoveToQ.h>
+#include <bender/URStop.h>
 
 
 
@@ -45,7 +47,7 @@ void SimplePlugin::initialize()
 	 */
 	_ur1sub =_node->subscribe("/ur1/ur_state", 1000, &SimplePlugin::ur1StateCallback, this);
 	_ur2sub =_node->subscribe("/ur2/ur_state", 1000, &SimplePlugin::ur2StateCallback, this);
-	
+
 	/* Start loop
 	 */
 	_timer = new QTimer();
@@ -67,6 +69,8 @@ void SimplePlugin::open(WorkCell* workcell)
 	} else {
 		_ur1 = _workcell->findDevice("UR1");
 		_ur2 = _workcell->findDevice("UR2");
+		_ur1ghost = _workcell->findDevice("UR1_ghost");
+		_ur2ghost = _workcell->findDevice("UR2_ghost");
 	}
 	
 	// get default state
@@ -83,6 +87,9 @@ void SimplePlugin::close()
 
 void SimplePlugin::setupGUI()
 {
+	connect(ui.ur1MoveButton, SIGNAL(clicked()), this, SLOT(ur1Move()));
+	connect(ui.ur2MoveButton, SIGNAL(clicked()), this, SLOT(ur2Move()));
+	connect(ui.stopButton, SIGNAL(clicked()), this, SLOT(stopRobots()));
 }
 
 
@@ -93,8 +100,59 @@ void SimplePlugin::update()
 	ros::spinOnce();
 	
 	if (_ur1 && _ur2) {
+		_state = getRobWorkStudio()->getState();
+		_ur1->setQ(_ur1q, _state);
+		_ur2->setQ(_ur2q, _state);
 		getRobWorkStudio()->setState(_state);
 	}
+}
+
+
+
+void SimplePlugin::ur1Move()
+{
+	if (_ur1) {
+		Q q = _ur1ghost->getQ(getRobWorkStudio()->getState());
+		
+		bender::URMoveToQ srv;
+		for (int i = 0; i < 6; ++i) {
+			srv.request.target.Q.data()[i] = q[i];
+		}
+		srv.request.speed = 0.1;
+		
+		ros::service::call("/ur1/ur_move_to_q", srv);
+		
+		cout << "Calling UR1 move: " << q << endl;
+	}
+}
+
+
+
+void SimplePlugin::ur2Move()
+{
+	if (_ur2) {
+		Q q = _ur2ghost->getQ(getRobWorkStudio()->getState());
+		
+		bender::URMoveToQ srv;
+		for (int i = 0; i < 6; ++i) {
+			srv.request.target.Q.data()[i] = q[i];
+		}
+		srv.request.speed = 0.1;
+		
+		ros::service::call("/ur2/ur_move_to_q", srv);
+		
+		cout << "Calling UR2 move: " << q << endl;
+	}
+}
+
+
+
+void SimplePlugin::stopRobots()
+{
+	bender::URStop srv1, srv2;
+	
+	ros::service::call("/ur1/ur_stop", srv1);
+	ros::service::call("/ur2/ur_stop", srv2);
 }
 
 
@@ -103,11 +161,7 @@ void SimplePlugin::ur1StateCallback(const bender::URState::ConstPtr& msg)
 {
 	rw::math::Q q(6, msg->qActual.Q.data());
 	
-	//cout << q << std::endl;
-	
-	if (_ur1) {
-		_ur1->setQ(q, _state);
-	}
+	_ur1q = q;
 }
 
 
@@ -116,9 +170,7 @@ void SimplePlugin::ur2StateCallback(const bender::URState::ConstPtr& msg)
 {
 	rw::math::Q q(6, msg->qActual.Q.data());
 	
-	if (_ur2) {
-		_ur2->setQ(q, _state);
-	}
+	_ur2q = q;
 }
 
 

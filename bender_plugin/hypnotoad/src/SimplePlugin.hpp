@@ -40,6 +40,15 @@ class SimplePlugin : public rws::RobWorkStudioPlugin
 	private slots:
 		//! @brief updates workcell
 		void update();
+		
+		//! @brief moves UR1
+		void ur1Move();
+		
+		//! @brief moves UR2
+		void ur2Move();
+		
+		//! @brief stops both robots
+		void stopRobots();
 
 	private:
 		//! @brief set-up GUI
@@ -61,6 +70,10 @@ class SimplePlugin : public rws::RobWorkStudioPlugin
 		rw::kinematics::State _state;
 		rw::models::Device::Ptr _ur1;
 		rw::models::Device::Ptr _ur2;
+		rw::models::Device::Ptr _ur1ghost;
+		rw::models::Device::Ptr _ur2ghost;
+		rw::math::Q _ur1q;
+		rw::math::Q _ur2q;
 		
 		// ROS stuff
 		ros::NodeHandle* _node;
