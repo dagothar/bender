@@ -1,0 +1,33 @@
+<IncludeData>
+	<RigidDevice device="robot">
+		<!-- baza -->
+		<KinematicBase frame="baza">
+			<MaterialID>Aluminum</MaterialID>
+		</KinematicBase>
+		
+		<!-- przeguby -->
+		<RigidJoint joint="przegub1">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="przegub2">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<RigidJoint joint="przegub3">
+			<Mass>1</Mass>
+			<EstimateInertia/>
+			<MaterialID>Aluminum</MaterialID>
+		</RigidBody>
+		
+		<!-- limity sil -->
+		<ForceLimit joint="przegub1">0.01</ForceLimit>
+		<ForceLimit joint="przegub2">0.01</ForceLimit>
+		<ForceLimit joint="przegub3">0.01</ForceLimit>
+	</RigidDevice>
+</IncludeData>
+

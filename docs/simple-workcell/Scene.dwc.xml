@@ -1,0 +1,28 @@
+<DynamicWorkcell workcell="Scene.wc.xml">
+	<!-- paramery symulatora -->
+	<PhysicsEngine>
+		<RestitutionModel>Newton</RestitutionModel>
+		<ContactModel>Guendel</ContactModel>
+		<AutoDisable>true</AutoDisable>
+		<Property name="StepMethod">WorldStep</Property>
+		<Property name="MaxCorrectingVelocity" type="float">0.5</Property>
+	</PhysicsEngine>
+
+	<!-- grawitacja -->
+	<Gravity>0 0 -9.81</Gravity>
+
+	<!-- materialy -->
+	<Include file="DynamicMaterialDataBase.xml"/>
+	
+	<!-- ciala nieruchome -->
+	<FixedBody frame="table">
+		<Mass>1000</Mass>
+		<EstimateInertia/>
+		<Integrator>Euler</Integrator>
+		<MaterialID>Rubber</MaterialID>
+	</FixedBody>
+	
+	<!-- robot -->
+	<Include file="robot.dwc.xml"/>
+
+</DynamicWorkcell>
