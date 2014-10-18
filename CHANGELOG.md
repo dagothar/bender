@@ -1,3 +1,8 @@
+18-10-2014
+----------
+* Set up new base workstation
+
+
 09-09-2014
 ----------
 * Added ghost robots to workcell.
