@@ -230,6 +230,7 @@ Q = w_S \cdot S + w_C \cdot C + w_W \cdot W - w_\sigma \cdot \frac{\sigma_{max}}
 
 
 \section{Optymalizacja geometrii chwytaka}
+\subsection{Wstęp}
 \begin{frame}
 \frametitle{OPTYMALIZACJA}
 \begin{itemize}
@@ -240,6 +241,7 @@ Q = w_S \cdot S + w_C \cdot C + w_W \cdot W - w_\sigma \cdot \frac{\sigma_{max}}
 \end{itemize}
 \end{frame}
 
+\subsection{Parametryzacja}
 \begin{frame}
 \frametitle{Parametryzacja geometrii szczęk}
 \begin{tabular}{cc}
@@ -266,6 +268,7 @@ Q = w_S \cdot S + w_C \cdot C + w_W \cdot W - w_\sigma \cdot \frac{\sigma_{max}}
 \end{tabular}
 \end{frame}
 
+\subsection{Krajobraz jakości}
 \begin{frame}
 \frametitle{\textit{Krajobraz} jakości}
 Poprzez wybór pewnego punktu początkowego w przestrzeni parametryzacji, a następnie modyfikację poszczególnych parametrów, możemy wyznaczyć wycinki przestrzeni jakości:
@@ -275,6 +278,7 @@ Poprzez wybór pewnego punktu początkowego w przestrzeni parametryzacji, a nast
 \end{center}
 \end{frame}
 
+\subsection{Metoda optymalizacji}
 \begin{frame}
 \frametitle{Metoda optymalizacji}
 \begin{tabular}{cc}
@@ -298,8 +302,42 @@ Algorytm:
 \end{tabular}
 \end{frame}
 
+\subsection{Rezultaty}
+\begin{frame}
+\frametitle{Optymalizacja losowa}
+Dla wybranych zadań wygenerowano heurystycznie zbiór przypadkowych parametryzacji chwytaków, a następnie dokonano optymalizacji niektórych z nich.
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{1. all directions} & \textbf{2. from top} & \textbf{3. from side} \\
+\includegraphics[width=0.3\linewidth]{images/s100_rotor1_opt} &
+\includegraphics[width=0.3\linewidth]{images/s100_rotor2_opt} &
+\includegraphics[width=0.3\linewidth]{images/s100_rotor3_opt} \\ \hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\subsection{Przykład optymalizacji}
+\begin{frame}
+\frametitle{Przykład optymalizacji}
+\begin{tabular}{cc}
+\begin{minipage}{0.5\textwidth}
+Jak wygląda ewolucja przykładowego projektu?
+\vspace{1cm}
+\begin{block}{Ewolucja}
+\movie[externalviewer]{\textit{Animacja}}{images/s100_rotor3_387.gif}
+\end{block}
+\end{minipage}
+ &
+\begin{minipage}{0.5\textwidth}
+\includegraphics[width=\linewidth]{images/s100_rotor3_387_result}
+\end{minipage}
+\end{tabular}
+\end{frame}
 
 \section{Koniec}
+\subsection{Dalsze prace}
 \begin{frame}
 \frametitle{Plany na przyszłość}
 \begin{itemize}
@@ -313,10 +351,24 @@ Algorytm:
 \end{itemize}
 \end{frame}
 
+\subsection{Podsumowanie}
 \begin{frame}
 \frametitle{Podsumowanie}
+\begin{itemize}
+\item Opracowano metodę oceny jakości chwytaka na podstawie symulacji
+\item Wybrano parametryzację geometrii szczęk chwytaka dwupalcowego
+\item Zastosowano metodę optymalizacji w oparciu o opracowaną funkcję jakości w wybranej przestrzeni parametryzacji
+\end{itemize}
+
+
+Publikacje:
+\begin{itemize}
+\item Adam Wolniakowski, Konstantsin Miatliuk, Norbert Kruger, Jimmy A. Rytz ``\textit{Automatic evaluation of task-focused parallel jaw gripper design}''
+\item Adam Wolniakowski, Jimmy A. Jorgensen, Konstantsin Miatliuk, Henrik Gordon Petersen, Norbert Kruger ``\textit{Task and context sensitive optimization of gripper design using dynamic grasp simulation}''
+\end{itemize}
 \end{frame}
 
+\subsection{Koniec}
 \begin{frame}
 \frametitle{Koniec}
 Dziękuję za uwagę!
