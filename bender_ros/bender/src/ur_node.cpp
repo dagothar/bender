@@ -251,7 +251,8 @@ int main(int argc, char* argv[])
 	URRTInterface.connect(config.robotIP, config.robotRTPort);
 	URRTInterface.start();
 	URInterface.connect(config.robotIP, config.robotPort);
-	URInterface.startInterface(config.hostIP, config.hostPort, config.script);
+	//URInterface.startInterface(config.hostIP, config.hostPort, config.script);
+	URInterface.startCommunication(config.hostIP, config.hostPort, config.script);
 	
 	// advertise topics
 	ros::Publisher urStatePublisher = nh.advertise<bender::URState>("ur_state", 1000);
