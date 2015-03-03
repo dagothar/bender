@@ -26,6 +26,8 @@ int main() {
 	
 	// move gripper
 	cout << gripper->setConfiguration(35.0) << endl;
+	cout << gripper->setConfiguration(15.0) << endl;
+	cout << gripper->setConfiguration(45.0) << endl;
 	cout << gripper->close() << endl;
 	
 	//cout << gripper->close() << endl;

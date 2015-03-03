@@ -32,6 +32,11 @@ public:
 	virtual void disconnect() = 0;
 	
 	/**
+	 * @brief Returns \b true if gripper is in error state.
+	 */
+	virtual bool isError() const = 0;
+	
+	/**
 	 * @brief Clears error state.
 	 */
     virtual bool clearError() = 0;

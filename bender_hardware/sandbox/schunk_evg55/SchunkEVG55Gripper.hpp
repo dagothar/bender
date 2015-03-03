@@ -28,6 +28,8 @@ public:
 
 	virtual void disconnect();
 	
+	virtual bool isError() const;
+	
 	virtual bool clearError();
 
 	virtual bool home();
@@ -53,6 +55,7 @@ private:
 	unsigned char _moduleId;
 	bool _connected;
 	bool _referenced;
+	bool _error;
 };
 
 #endif // _SCHUNKEVG55GRIPPER_HPP
