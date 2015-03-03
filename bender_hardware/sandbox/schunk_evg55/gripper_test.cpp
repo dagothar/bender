@@ -22,17 +22,13 @@ int main() {
 	
 	// reference gripper
 	cout << gripper->home() << endl;
-	sleep(5);
+	//sleep(2);
 	
 	// move gripper
-	//gripper->setConfiguration(35.0);
-	//sleep(5);
+	cout << gripper->setConfiguration(35.0) << endl;
+	cout << gripper->close() << endl;
 	
-	gripper->open();
-	sleep(5);
-	
-	gripper->close();
-	sleep(5);
+	//cout << gripper->close() << endl;
 	
 	delete gripper;
 	

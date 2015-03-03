@@ -32,9 +32,19 @@ public:
 	virtual void disconnect() = 0;
 	
 	/**
+	 * @brief Clears error state.
+	 */
+    virtual bool clearError() = 0;
+	
+	/**
 	 * @brief Executes referencing command.
 	 */
 	virtual bool home() = 0;
+	
+	/**
+	 * @brief Returns \b true if the gripper has been referenced.
+	 */
+	virtual bool isReferenced() const = 0;
 	
 	/**
 	 * @brief Executes opening movement.

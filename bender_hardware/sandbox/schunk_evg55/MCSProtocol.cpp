@@ -1,6 +1,7 @@
 #include "MCSProtocol.hpp"
 #include <iostream>
 #include <iomanip>
+#include <unistd.h>
 #include "SchunkCRC16.hpp"
 
 using namespace std;
@@ -50,6 +51,9 @@ bool MCSProtocol::send(SerialPort* port, const Packet& packet) {
 		buf[i] = packet[i];
 	}
 	
+	cout << "Sending: ";
+	printPacket(packet);
+	
 	return port->write(buf, packet.size());
 }
 
@@ -73,6 +77,7 @@ bool MCSProtocol::receive(SerialPort* port, unsigned char id, Packet& packet) {
 	}
 	packet = response;
 	
+	cout << "Received: ";
 	printPacket(response);
 	
 	return true;
@@ -105,19 +110,104 @@ bool MCSProtocol::isOk(const Packet& packet) {
 	return false;
 }
 
-bool MCSProtocol::homeCmd(SerialPort* port, unsigned char id) {
-	// send a REF command
-	MCSProtocol::Data data = makeData(Reference);
+bool MCSProtocol::stopCmd(SerialPort* port, unsigned char id) {
+	// send a STOP command
+	MCSProtocol::Data data = makeData(Stop);
+	MCSProtocol::Packet packet = makePacket(id, data);
+
+	if (!send(port, packet)) return false;
+
+	// receive messages until timeout or ack received
+	bool stopped = false;
+	int sleepCnt = 0;
+	while (!stopped && sleepCnt < 100) {
+		usleep(1);
+		
+		Packet response;
+		bool received = receive(port, id, response);
+		
+		if (!received) {
+			++sleepCnt;
+			continue;
+		}
+		
+		if (isOk(response)) {
+			stopped = true;
+		} else {
+			++sleepCnt;
+		}
+	}
+	
+	port->clean();
+	
+	return stopped;
+}
+
+bool MCSProtocol::ackCmd(SerialPort* port, unsigned char id) {
+	MCSProtocol::Data data = makeData(Acknowledge);
 	MCSProtocol::Packet packet = makePacket(id, data);
 	
 	if (!send(port, packet)) return false;
 	
-	Packet response;
-	receive(port, id, response);
+	// receive messages until timeout or position reached
+	bool ok = false;
+	int sleepCnt = 0;
+	while (!ok && sleepCnt < 100) {
+		usleep(1);
+		
+		Packet response;
+		bool received = receive(port, id, response);
+		
+		if (!received) {
+			++sleepCnt;
+			continue;
+		}
+		
+		if (isOk(response)) {
+			ok = true;
+		} else {
+			++sleepCnt;
+		}
+	}
 	
-	if (isOk(response)) return true;
+	port->clean();
 	
-	return false;
+	return ok;
+}
+
+bool MCSProtocol::homeCmd(SerialPort* port, unsigned char id) {
+	// send a REF command
+	MCSProtocol::Data data = makeData(Reference);
+	MCSProtocol::Packet packet = makePacket(id, data);
+
+	if (!send(port, packet)) return false;
+
+	// receive messages until timeout or position reached
+	bool reached = false;
+	int sleepCnt = 0;
+	while (!reached && sleepCnt < 100) {
+		usleep(1);
+		
+		Packet response;
+		bool received = receive(port, id, response);
+		
+		if (!received) {
+			++sleepCnt;
+			continue;
+		}
+		
+		if (isOk(response)) {
+			reached = true;
+		} else {
+			++sleepCnt;
+		}
+	}
+	
+	port->clean();
+	
+	sleep(2);
+	
+	return reached;
 }
 
 bool MCSProtocol::movePositionCmd(SerialPort* port, unsigned char id, float pos) {
@@ -125,6 +215,65 @@ bool MCSProtocol::movePositionCmd(SerialPort* port, unsigned char id, float pos)
 	MCSProtocol::Packet packet = makePacket(id, data);
 	
 	if (!send(port, packet)) return false;
+	
+	// receive messages until timeout or position reached
+	bool reached = false;
+	int sleepCnt = 0;
+	while (!reached && sleepCnt < 100) {
+		usleep(1);
+		
+		Packet response;
+		bool received = receive(port, id, response);
+		
+		if (!received) {
+			++sleepCnt;
+			continue;
+		}
+		
+		if (response[3] == PositionReached) {
+			cout << "reached" << endl;
+			reached = true;
+		} else {
+			++sleepCnt;
+		}
+	}
+	
+	port->clean();
+	
+	return reached;
+}
+
+bool MCSProtocol::moveCurrentCmd(SerialPort* port, unsigned char id, float cur) {
+	MCSProtocol::Data data = makeData(MoveCurrent, cur);
+	MCSProtocol::Packet packet = makePacket(id, data);
+	
+	if (!send(port, packet)) return false;
+	
+	// receive messages until timeout or position reached
+	bool reached = false;
+	int sleepCnt = 0;
+	while (!reached && sleepCnt < 1000) {
+		usleep(1000);
+		
+		Packet response;
+		bool received = receive(port, id, response);
+		
+		if (!received) {
+			++sleepCnt;
+			continue;
+		}
+		
+		if (response[3] == MoveBlocked) { // move blocked
+			cout << "blocked" << endl;
+			reached = true;
+		} else {
+			++sleepCnt;
+		}
+	}
+	
+	port->clean();
+	
+	return reached;
 }
 
 MCSProtocol::Data MCSProtocol::makeData(Command cmd) {

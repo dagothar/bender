@@ -26,3 +26,6 @@ target_link_libraries(gripper_test ${USER_LIBRARIES} rwhw_serialport ${ROBWORK_L
 
 add_executable(cmd_test cmd_test.cpp SchunkCRC16.cpp SchunkEVG55Gripper.cpp RWHWSerialPort.cpp MCSProtocol.cpp)
 target_link_libraries(cmd_test ${USER_LIBRARIES} rwhw_serialport ${ROBWORK_LIBRARIES})
+
+add_executable(thread_test thread_test.cpp SchunkCRC16.cpp SchunkEVG55Gripper.cpp RWHWSerialPort.cpp MCSProtocol.cpp)
+target_link_libraries(thread_test ${USER_LIBRARIES} rwhw_serialport ${ROBWORK_LIBRARIES})

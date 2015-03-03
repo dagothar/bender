@@ -27,8 +27,12 @@ public:
 	virtual bool isConnected() const;
 
 	virtual void disconnect();
+	
+	virtual bool clearError();
 
 	virtual bool home();
+	
+	virtual bool isReferenced() const;
 
 	virtual bool open();
 
@@ -48,6 +52,7 @@ private:
 	SerialPort* _port;
 	unsigned char _moduleId;
 	bool _connected;
+	bool _referenced;
 };
 
 #endif // _SCHUNKEVG55GRIPPER_HPP

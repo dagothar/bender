@@ -12,10 +12,21 @@ class MCSProtocol {
 public:
 	//! Defines available commands
 	enum Command {
-		GetState = 0x95,
-		Reference = 0x92,
-		MoveCurrent = 0xb3,
-		MovePosition = 0xb0
+		CommandAcknowledge = 0x8b,
+		CommandStop = 0x91,
+		CommandGetState = 0x95,
+		CommandReference = 0x92,
+		CommandMoveCurrent = 0xb3,
+		CommandMovePosition = 0xb0
+	};
+	
+	//! Possible message types.
+	enum MessageType {
+		MessageOk,
+		MessageError,
+		MessageFailed,
+		MessageMoveBlocked,
+		MessageReachedPosition
 	};
 	
 	//! Data type.
@@ -23,6 +34,13 @@ public:
 	
 	//! Packet type.
 	typedef std::vector<unsigned char> Packet;
+	
+	//! A type for module to master response.
+	struct Message {
+		MessageType messageType;
+		unsigned char moduleId;
+		Data data;
+	};
 
 public:
 	/**
@@ -32,6 +50,8 @@ public:
 	
 	/**
 	 * @brief Creates a packet from data.
+	 * Prepends 0x05 M->S header, module id and dlen,
+	 * and appends CRC sum.
 	 */
 	static Packet makePacket(unsigned char module, Data data);
 	
@@ -44,7 +64,10 @@ public:
 	/**
 	 * @brief Reads a packet received from a module.
 	 */
-	static bool receive(SerialPort* port, unsigned char id, Packet& packet);
+	static bool receive(SerialPort* port, Message& message);
+	
+	//! Makes data by converting a float type parameter into a string of bytes.
+	static Data makeData(float value);
 	
 	/**
 	 * @brief Sends a ping to a module connected to the port.
@@ -59,6 +82,17 @@ public:
 	static bool isOk(const Packet& packet);
 	
 	/**
+	 * @brief Executes stop command.
+	 */
+	static bool stopCmd(SerialPort* port, unsigned char id);
+	
+	/**
+	 * @brief Executes error acknowledgement command.
+	 * Clears error state of the module.
+	 */
+	static bool ackCmd(SerialPort* port, unsigned char id);
+	
+	/**
 	 * @brief Executes homing command.
 	 */
 	static bool homeCmd(SerialPort* port, unsigned char id);
@@ -69,11 +103,11 @@ public:
 	 */
 	static bool movePositionCmd(SerialPort* port, unsigned char id, float pos);
 	
-	//! Makes data for parameterless command.
-	static Data makeData(Command cmd);
-	
-	//! Makes data for a single parameter command with float.
-	static Data makeData(Command cmd, float value);
+	/**
+	 * @brief Executes move with given current.
+	 * @param cur [in] current
+	 */
+	static bool moveCurrentCmd(SerialPort* port, unsigned char id, float cur);
 };
 
 #endif // _MCS_PROTOCOL_HPP
