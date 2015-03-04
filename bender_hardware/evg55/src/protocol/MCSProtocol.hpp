@@ -1,7 +1,7 @@
 #ifndef _MCS_PROTOCOL_HPP
 #define _MCS_PROTOCOL_HPP
 
-#include "SerialPort.hpp"
+#include <serial/SerialPort.hpp>
 
 #include <vector>
 

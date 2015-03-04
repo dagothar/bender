@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <unistd.h>
-#include "SchunkCRC16.hpp"
+#include <crc/SchunkCRC16.hpp>
 
 using namespace std;
 
