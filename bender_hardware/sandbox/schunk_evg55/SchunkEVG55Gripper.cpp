@@ -1,19 +1,28 @@
 #include "SchunkEVG55Gripper.hpp"
-#include "SerialPort.hpp"
-#include "MCSProtocol.hpp"
+
 #include <iostream>
 #include <unistd.h>
+#include <boost/bind.hpp>
+
+#include "SerialPort.hpp"
+#include "MCSProtocol.hpp"
+
 
 using namespace std;
 
 SchunkEVG55Gripper::SchunkEVG55Gripper() :
+	_status(0),
 	_connected(false),
 	_referenced(false),
-	_error(false)
+	_error(false),
+	_errorCode(0),
+	_newInfo(false),
+	_position(0.0)
 {
 }
 
 SchunkEVG55Gripper::~SchunkEVG55Gripper() {
+	disconnect();
 }
 
 bool SchunkEVG55Gripper::connect(SerialPort* port) {
@@ -26,6 +35,12 @@ bool SchunkEVG55Gripper::connect(SerialPort* port) {
 			_connected = true;
 			
 			cout << "ID=" << (int)_moduleId << endl; // TODO remove output
+			
+			// launch listening thread
+			boost::function<void(SerialPort*, unsigned)> f = boost::bind(&SchunkEVG55Gripper::statusThreadFunc, this, _1, _2);
+			_statusThread = boost::thread(f, _port, _moduleId);
+			
+			//_ok = true;
 			
 			return true;
 		}
@@ -40,70 +55,82 @@ bool SchunkEVG55Gripper::isConnected() const {
 }
 
 void SchunkEVG55Gripper::disconnect() {
+	//TODO: how?
+	
+	// reset getstate interval
+	MCSProtocol::send(_port, MCSProtocol::makeGetStateCommand(_moduleId));
+	
+	_connected = false;
+	_statusThread.join();
 }
 
-bool SchunkEVG55Gripper::isError() const {
-	return _error;
+unsigned short SchunkEVG55Gripper::getError() const {
+	waitForNewInfo();
+	
+	_statusMutex.lock();
+	unsigned short error = _errorCode;
+	_statusMutex.unlock();
+	
+	return error;
 }
 
 bool SchunkEVG55Gripper::clearError() {
-	if (!_connected) {
-		cerr << "home(): The gripper is not connected!" << endl;
+	if (!_connected) { throw GripperNotConnected(); }
+	
+	// TODO: send acknowledge error command
+	MCSProtocol::send(_port, MCSProtocol::makeClearErrorCommand(_moduleId));
+	
+	// wait till error cleared
+	while (getError() != 0) {
+		usleep(1);
 		
-		return false;
+		//cout << "Referencing: " << getStatus() << endl;
+		
+		if (!_connected) { throw GripperNotConnected(); }
 	}
 	
-	
+	return true;
 }
 
 bool SchunkEVG55Gripper::home() {
 	_referenced = false;
 	
-	if (!_connected) {
-		cerr << "home(): The gripper is not connected!" << endl;
-		
-		return false;
-	}
+	if (!_connected) { throw GripperNotConnected(); }
 	
-	if (_error) {
-		cerr << "home(): The gripper is in error state!" << endl;
-		
-		return false;
-	}
+	// send command
+	MCSProtocol::send(_port, MCSProtocol::makeReferenceCommand(_moduleId));
 	
-	if (!MCSProtocol::send(_port, MCSProtocol::makeReferenceCommand(_moduleId))) {
-		cerr << "home(): Sending reference command failed!" << endl;
+	// wait till gripper referenced
+	while (!isReferenced()) {
+		usleep(1);
 		
-		return false;
-	}
-	
-	MCSProtocol::Message response;
-	if (!MCSProtocol::receive(_port, response)) {
-		cerr << "home(): No response from the reference command!" << endl;
+		cout << "Referencing: " << getStatus() << endl;
 		
-		return false;
-	}
-	
-	if (response.messageType == MCSProtocol::MessageOk) {
-		_referenced = true;
-		sleep(3);
-	}
-	else if (response.messageType == MCSProtocol::MessageError) {
-		_error = true;
-		_referenced = false;
+		if (!_connected)  { throw GripperNotConnected(); }
+		if (_error)  { throw GripperError(getError()); }
 	}
 	
 	return _referenced;
 }
 
 bool SchunkEVG55Gripper::isReferenced() const {
-	if (!_connected) {
-		cerr << "isReferenced(): The gripper is not connected!" << endl;
-		
-		return false;
-	}
+	waitForNewInfo();
 	
-	return _referenced;
+	_statusMutex.lock();
+	bool referenced = _referenced;
+	_statusMutex.unlock();
+	
+	return referenced;
+}
+
+bool SchunkEVG55Gripper::isPositionReached() const {
+	waitForNewInfo();
+	
+	_statusMutex.lock();
+	bool reached = _status & StatusPositionReached;
+	_statusMutex.unlock();
+	
+	return reached;
 }
 
 bool SchunkEVG55Gripper::open() {
@@ -123,104 +150,142 @@ bool SchunkEVG55Gripper::open() {
 }
 
 bool SchunkEVG55Gripper::close() {
-	if (!_connected) {
-		cerr << "close(): The gripper is not connected!" << endl;
-		
-		return false;
-	}
+	if (!_connected)  { throw GripperNotConnected(); }
 	
-	if (!_referenced) {
-		cerr << "close(): The gripper is not referenced!" << endl;
-		
-		return false;
-	}
+	if (!_referenced)  { throw GripperNotReferenced(); }
 	
-	if (_error) {
-		cerr << "close(): The gripper is in error state!" << endl;
-		
-		return false;
-	}
+	if (_error)  { throw GripperError(0); }
 	
-	if (!MCSProtocol::send(_port, MCSProtocol::makeMoveCurrentCommand(_moduleId, 0.1))) {
-		cerr << "close(): Sending reference command failed!" << endl;
-		
-		return false;
-	}
+	MCSProtocol::send(_port, MCSProtocol::makeMoveGripCommand(_moduleId, -5.0));
 	
-	int count = 0;
-	while (count < 100) {
+	// wait till move completed
+	while (_status & StatusMoving) {
 		usleep(1);
-		++count;
 		
-		MCSProtocol::Message response;
-		if (!MCSProtocol::receive(_port, response)) {
-			continue;
-		}
-		
-		if (response.messageType == MCSProtocol::MessageMoveBlocked) {
-			return true;
-		}
-		else if (response.messageType == MCSProtocol::MessageError) {
-			_error = true;
-			return false;
-		}
+		if (!_connected)  { throw GripperNotConnected(); }
+	
+		//if (_error)  { throw GripperError(getError()); }
 	}
 	
-	return false;
+	if (getError() == ErrorSoftLow) { // acknowledge limit
+		clearError();
+	}
+	
+	return true;
 }
 
 void SchunkEVG55Gripper::stop() {
 }
 
 double SchunkEVG55Gripper::getConfiguration() const {
+	waitForNewInfo();
+	
+	_statusMutex.lock();
+	float position = _position;
+	_statusMutex.unlock();
+	
+	return position;
 }
 
 bool SchunkEVG55Gripper::setConfiguration(double q) {
-	if (!_connected) {
-		cerr << "setConfiguration(): The gripper is not connected!" << endl;
-		
-		return false;
-	}
+	if (!_connected)  { throw GripperNotConnected(); }
 	
-	if (!_referenced) {
-		cerr << "setConfiguration(): The gripper is not referenced!" << endl;
-		
-		return false;
-	}
+	if (!_referenced)  { throw GripperNotReferenced(); }
 	
-	if (_error) {
-		cerr << "setConfiguration(): The gripper is in error state!" << endl;
-		
-		return false;
-	}
+	if (_error)  { throw GripperError(0); }
 	
-	if (!MCSProtocol::send(_port, MCSProtocol::makeMovePositionCommand(_moduleId, q))) {
-		cerr << "setConfiguration(): Sending reference command failed!" << endl;
-		
-		return false;
-	}
+	MCSProtocol::send(_port, MCSProtocol::makeMovePositionCommand(_moduleId, q));
 	
-	int count = 0;
-	while (count < 100) {
+	// wait till move completed
+	while (!isPositionReached()) {
 		usleep(1);
-		++count;
 		
+		if (!_connected)  { throw GripperNotConnected(); }
+	
+		if (_error)  { throw GripperError(0); }
+	}
+	
+	return true;
+}
+
+unsigned short SchunkEVG55Gripper::getStatus() const {
+	waitForNewInfo();
+	
+	_statusMutex.lock();
+	unsigned short status = _status;
+	_statusMutex.unlock();
+	
+	return status;
+}
+
+
+
+void SchunkEVG55Gripper::waitForNewInfo() const {
+	_statusMutex.lock();
+	_newInfo = false;
+	_statusMutex.unlock();
+	
+	bool newInfo;
+	do {
+		usleep(1);
+		
+		_statusMutex.lock();
+		newInfo = _newInfo;
+		_statusMutex.unlock();
+	} while (!newInfo);
+}
+
+
+
+void SchunkEVG55Gripper::statusThreadFunc(SerialPort* port, unsigned id) {
+	char* data = new char[14];
+	int count = 0;
+	
+	// send get state command
+	MCSProtocol::send(_port, MCSProtocol::makeGetStateCommand(_moduleId, 0.1));
+	
+	while (_connected) {		
+		// receive response
 		MCSProtocol::Message response;
 		if (!MCSProtocol::receive(_port, response)) {
+			++count;
+			if (count > 100) _connected = false;
+			
 			continue;
 		}
 		
-		if (response.messageType == MCSProtocol::MessagePositionReached) {
-			return true;
-		}
-		else if (response.messageType == MCSProtocol::MessageError) {
-			_error = true;
-			return false;
+		count = 0;
+		
+		// decode message & set status flags
+		if (response.messageType == MCSProtocol::MessageOther
+			&& response.data[MCSProtocol::IndexCommand] == MCSProtocol::CommandGetState
+			&& response.data[MCSProtocol::IndexDlen] == 15
+			&& response.data[MCSProtocol::IndexModuleId] == id) {
+			
+			// convert message
+			for (int i = 0; i < 14; ++i) {
+				data[i] = response.data[MCSProtocol::IndexData+i];
+			}
+
+			float position = *(reinterpret_cast<float*>(data));
+			unsigned short status = *(reinterpret_cast<unsigned short*>(data+12));
+			
+			//cout << "Position: " << position << " Status: " << status << endl;
+			cout << "thread func" << endl;
+			
+			// decode message
+			_statusMutex.lock();
+			
+				_newInfo = true;
+				_status = status;
+				_referenced = status & StatusReferenced;
+				_error = status & StatusError;
+				_errorCode = (status & 0xff00) >> 8;
+				_position = position;
+				
+			_statusMutex.unlock();
 		}
 	}
 	
-	return false;
-}
-
-unsigned SchunkEVG55Gripper::getStatus() const {
+	delete data;
 }

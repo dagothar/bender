@@ -3,12 +3,27 @@
 
 #include "Gripper.hpp"
 
+#include <boost/thread.hpp>
+
 
 
 class SchunkEVG55Gripper: public Gripper {
 public:
-	//! Defines max gripper opening
-	static const float maxOpening = 100.0; // mm
+	//! Encoding of the status flags.
+	enum Status {
+		StatusReferenced = 0x01,
+		StatusMoving = 0x02,
+		StatusProgramMode = 0x04,
+		StatusWarning = 0x08,
+		StatusError = 0x10,
+		StatusBrake = 0x20,
+		StatusMoveEnd = 0x40,
+		StatusPositionReached = 0x80
+	};
+	
+	enum Error {
+		ErrorSoftLow = 0x0d5
+	};
 	
 public:
 	/**
@@ -28,7 +43,7 @@ public:
 
 	virtual void disconnect();
 	
-	virtual bool isError() const;
+	virtual unsigned short getError() const;
 	
 	virtual bool clearError();
 
@@ -46,16 +61,33 @@ public:
 
 	virtual bool setConfiguration(double q);
 
-	virtual unsigned getStatus() const;
+	virtual unsigned short getStatus() const;
 	
 protected:
+	/**
+	 * @brief A function for the thread listening to gripper messages.
+	 */
+	void statusThreadFunc(SerialPort* port, unsigned id);
+	
+	//! Waits till new information received from module.
+	void waitForNewInfo() const;
+	
+	//! Return \b true if position reached.
+	bool isPositionReached() const;
 
 private:
 	SerialPort* _port;
 	unsigned char _moduleId;
-	bool _connected;
-	bool _referenced;
-	bool _error;
+	volatile unsigned short _status;
+	volatile bool _connected;
+	volatile bool _referenced;
+	volatile bool _error;
+	volatile unsigned short _errorCode;
+	mutable volatile bool _newInfo; // set by status thread when receiving new info
+	volatile float _position;
+	
+	mutable boost::mutex _statusMutex;
+	boost::thread _statusThread;
 };
 
 #endif // _SCHUNKEVG55GRIPPER_HPP

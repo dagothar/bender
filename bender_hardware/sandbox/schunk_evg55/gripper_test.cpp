@@ -21,16 +21,21 @@ int main() {
 	cout << gripper->isConnected() << endl;
 	
 	// reference gripper
-	cout << gripper->home() << endl;
-	//sleep(2);
+	gripper->home();
+	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
 	
 	// move gripper
-	cout << gripper->setConfiguration(35.0) << endl;
-	cout << gripper->setConfiguration(15.0) << endl;
-	cout << gripper->setConfiguration(45.0) << endl;
-	cout << gripper->close() << endl;
+	gripper->setConfiguration(35.0);
+	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
 	
-	//cout << gripper->close() << endl;
+	gripper->setConfiguration(15.0);
+	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
+	
+	gripper->setConfiguration(25.0);
+	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
+	
+	gripper->close();
+	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
 	
 	delete gripper;
 	

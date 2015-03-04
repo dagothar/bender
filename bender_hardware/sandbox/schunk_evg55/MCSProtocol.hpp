@@ -26,7 +26,9 @@ public:
 		CommandGetState = 0x95,
 		CommandReference = 0x92,
 		CommandMoveCurrent = 0xb3,
+		CommandMoveVelocity = 0xb5,
 		CommandMovePosition = 0xb0,
+		CommandMoveGrip = 0xb7,
 		CommandError = 0x03,
 		CommandFailed = 0x05,
 		CommandOk1 = 0x4f,
@@ -109,7 +111,7 @@ public:
 	/**
 	 * @brief Makes a 'get state' command packet.
 	 */
-	static Packet makeGetStateCommand(unsigned char id);
+	static Packet makeGetStateCommand(unsigned char id, float interval = 0.0);
 	
 	/**
 	 * @brief Makes a 'move to position' command packet.
@@ -120,6 +122,21 @@ public:
 	 * @brief Makes a 'move current' command packet.
 	 */
 	static Packet makeMoveCurrentCommand(unsigned char id, float cur);
+	
+	/**
+	 * @brief Makes a 'move velocity' command packet.
+	 */
+	static Packet makeMoveVelocityCommand(unsigned char id, float vel);
+	
+	/**
+	 * @brief Makes a 'move grip' command packet.
+	 */
+	static Packet makeMoveGripCommand(unsigned char id, float cur);
+	
+	/**
+	 * @brief Makes 'clear error' command.
+	 */
+	static Packet makeClearErrorCommand(unsigned char id);
 };
 
 #endif // _MCS_PROTOCOL_HPP

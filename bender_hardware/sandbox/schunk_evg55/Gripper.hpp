@@ -2,7 +2,9 @@
 #define _GRIPPER_HPP
 
 #include <string>
+
 #include "SerialPort.hpp"
+#include "GripperException.hpp"
 
 
 
@@ -32,9 +34,9 @@ public:
 	virtual void disconnect() = 0;
 	
 	/**
-	 * @brief Returns \b true if gripper is in error state.
+	 * @brief Returns the error code (0 when no error).
 	 */
-	virtual bool isError() const = 0;
+	virtual unsigned short getError() const = 0;
 	
 	/**
 	 * @brief Clears error state.
@@ -43,6 +45,8 @@ public:
 	
 	/**
 	 * @brief Executes referencing command.
+	 * Throws GripperException.
+	 * @return \b true when referencing succesful.
 	 */
 	virtual bool home() = 0;
 	
@@ -79,7 +83,7 @@ public:
 	/**
 	 * @brief Returns gripper status.
 	 */
-	virtual unsigned getStatus() const = 0;
+	virtual unsigned short getStatus() const = 0;
 };
 
 #endif // _GRIPPER_HPP

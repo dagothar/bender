@@ -52,8 +52,8 @@ bool MCSProtocol::send(SerialPort* port, const Packet& packet) {
 		buf[i] = packet[i];
 	}
 	
-	clog << "Sending: ";
-	printPacket(packet);
+	//clog << "Sending: ";
+	//printPacket(packet);
 	
 	return port->write(buf, packet.size());
 }
@@ -82,8 +82,8 @@ bool MCSProtocol::receive(SerialPort* port, Message& message) {
 		message.data.push_back(buf[i]);
 	}
 	
-	clog << "Received: ";
-	printPacket(message.data);
+	//clog << "Received: ";
+	//printPacket(message.data);
 	
 	// get module id
 	message.moduleId = message.data[1];
@@ -121,7 +121,10 @@ bool MCSProtocol::ping(SerialPort* port, unsigned char id) {
 	Message response;
 	if (!receive(port, response)) return false;
 	
-	if (response.messageType == MessageOther) {
+	if (response.messageType == MessageOther
+		&& response.data[MCSProtocol::IndexCommand] == MCSProtocol::CommandGetState
+		&& response.data[MCSProtocol::IndexModuleId] == id) {
+		
 		return true;
 	}
 	
@@ -147,9 +150,12 @@ MCSProtocol::Packet MCSProtocol::makeReferenceCommand(unsigned char id) {
 	return makePacket(id, data);
 }
 
-MCSProtocol::Packet MCSProtocol::makeGetStateCommand(unsigned char id) {
+MCSProtocol::Packet MCSProtocol::makeGetStateCommand(unsigned char id, float interval) {
 	Data data;
 	data.push_back(CommandGetState);
+	
+	Data param = makeData(interval);
+	data.insert(data.end(), param.begin(), param.end());
 	
 	return makePacket(id, data);
 }
@@ -170,6 +176,33 @@ MCSProtocol::Packet MCSProtocol::makeMoveCurrentCommand(unsigned char id, float 
 	
 	Data position = makeData(cur);
 	data.insert(data.end(), position.begin(), position.end());
+	
+	return makePacket(id, data);
+}
+
+MCSProtocol::Packet MCSProtocol::makeMoveVelocityCommand(unsigned char id, float vel) {
+	Data data;
+	data.push_back(CommandMoveVelocity);
+	
+	Data param = makeData(vel);
+	data.insert(data.end(), param.begin(), param.end());
+	
+	return makePacket(id, data);
+}
+
+MCSProtocol::Packet MCSProtocol::makeMoveGripCommand(unsigned char id, float cur) {
+	Data data;
+	data.push_back(CommandMoveGrip);
+	
+	Data param = makeData(cur);
+	data.insert(data.end(), param.begin(), param.end());
+	
+	return makePacket(id, data);
+}
+
+MCSProtocol::Packet MCSProtocol::makeClearErrorCommand(unsigned char id) {
+	Data data;
+	data.push_back(CommandAcknowledge);
 	
 	return makePacket(id, data);
 }
