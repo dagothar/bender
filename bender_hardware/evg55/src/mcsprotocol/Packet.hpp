@@ -53,6 +53,7 @@ public:
 	Byte getCommand() const;
 	void setCommand(Byte command);
 	Byte getDlen() const;
+	void setDlen(Byte dlen);
 	ByteVector getData() const;
 	void setData(const ByteVector& data);
 	unsigned short getCrcSum() const;
@@ -69,7 +70,7 @@ protected:
 	inline unsigned getCrcIndex() const;
 	
 	//! Updates the CRC sum.
-	unsigned short updateCrc() const;
+	unsigned short updateCrc();
 
 private:
 	ByteVector _packet;

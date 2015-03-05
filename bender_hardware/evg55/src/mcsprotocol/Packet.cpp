@@ -3,9 +3,11 @@
 #include <iomanip>
 
 #include "DataConversion.hpp"
+#include <crc/SchunkCRC16.hpp>
 
 using namespace std;
 using namespace mcsprotocol;
+using namespace crc;
 
 
 
@@ -14,6 +16,7 @@ Packet::Packet(Byte header, Byte id, Byte cmd, const ByteVector& data) :
 {
 	setHeader(header);
 	setId(id);
+	setDlen(1);
 	setCommand(cmd);
 	setData(data);
 	
@@ -75,6 +78,11 @@ Byte Packet::getDlen() const {
 	return (*this)[DlenIndex];
 }
 
+void Packet::setDlen(Byte dlen) {
+	(*this)[DlenIndex] = dlen;
+	updateCrc();
+}
+
 ByteVector Packet::getData() const {	
 	if (DataIndex + getDataLength() > _packet.size() - 2) throw PacketTooShort();
 	
@@ -91,7 +99,7 @@ void Packet::setData(const ByteVector& data) {
 	_packet.insert(_packet.begin() + DataIndex, data.begin(), data.end());
 	
 	// update Dlen
-	(*this)[DlenIndex] = data.size() + 1;
+	setDlen(data.size() + 1);
 	
 	updateCrc();
 }
@@ -110,19 +118,31 @@ unsigned Packet::getCrcIndex() const {
 	return CmdIndex + getDlen();
 }
 
-unsigned short Packet::updateCrc() const {
+unsigned short Packet::updateCrc() {
+	if (getCrcIndex() > _packet.size()) throw PacketOutOfBounds();
+	
+	CRC* crcCalculator = new SchunkCRC16();
+	uint16_t crcSum = crcCalculator->crc(ByteVector(_packet.begin(), _packet.begin() + getCrcIndex()));
+	delete crcCalculator;
+
+	// append CRC
+	char* crcBytes = reinterpret_cast<char*>(&crcSum);
+	(*this)[getCrcIndex()] = crcBytes[0];
+	(*this)[getCrcIndex()+1] = crcBytes[1];
+	
+	return crcSum;
 }
 
-ostream& operator<<(ostream& stream, const Packet& packet) {
+std::ostream& mcsprotocol::operator<<(std::ostream& stream, const Packet& packet) {
 	// save stream state
 	ios init(NULL);
     init.copyfmt(stream);
     
-    const vector<Byte> bytes;// = packet.raw();
-	for (unsigned i = 0; i < bytes.size(); ++i) {
-		stream << hex << setfill('0') << setw(2) << +bytes[i] << ' ';
+    stream << "< ";
+	for (unsigned i = 0; i < packet.size(); ++i) {
+		stream << hex << setfill('0') << setw(2) << +packet[i] << ' ';
 	}
-	stream << endl;
+	stream << '>';
 	
 	// restore stream state
 	stream.copyfmt(init);
