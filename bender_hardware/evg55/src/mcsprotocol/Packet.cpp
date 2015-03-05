@@ -104,10 +104,20 @@ void Packet::setData(const ByteVector& data) {
 	updateCrc();
 }
 
-unsigned short Packet::getCrcSum() const {
+uint16_t Packet::getCrcSum() const {
 	if (getCrcIndex() + 2 > _packet.size()) throw PacketOutOfBounds();
 	
-	return DataConversion::ByteVector2UnsignedInt(ByteVector(_packet.begin() + getCrcIndex(), _packet.begin() + getCrcIndex() + 2));
+	return DataConversion::byteVector2unsignedInt(ByteVector(_packet.begin() + getCrcIndex(), _packet.begin() + getCrcIndex() + 2));
+}
+
+uint16_t Packet::calculateCrcSum() const {
+	if (getCrcIndex() > _packet.size()) throw PacketOutOfBounds();
+	
+	CRC* crcCalculator = new SchunkCRC16();
+	uint16_t crcSum = crcCalculator->crc(ByteVector(_packet.begin(), _packet.begin() + getCrcIndex()));
+	delete crcCalculator;
+	
+	return crcSum;
 }
 
 unsigned Packet::getDataLength() const {
@@ -118,12 +128,12 @@ unsigned Packet::getCrcIndex() const {
 	return CmdIndex + getDlen();
 }
 
-unsigned short Packet::updateCrc() {
-	if (getCrcIndex() > _packet.size()) throw PacketOutOfBounds();
-	
-	CRC* crcCalculator = new SchunkCRC16();
-	uint16_t crcSum = crcCalculator->crc(ByteVector(_packet.begin(), _packet.begin() + getCrcIndex()));
-	delete crcCalculator;
+bool Packet::checkCrc() const {
+	return getCrcSum() == calculateCrcSum();
+}
+
+uint16_t Packet::updateCrc() {
+	uint16_t crcSum = calculateCrcSum();
 
 	// append CRC
 	char* crcBytes = reinterpret_cast<char*>(&crcSum);

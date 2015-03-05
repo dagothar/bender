@@ -1,6 +1,7 @@
 #ifndef _EVG55_HPP
 #define _EVG55_HPP
 
+#include <boost/thread.hpp>
 #include <serial/SerialPort.hpp>
 
 namespace evg55 {
@@ -49,33 +50,39 @@ public:
 	bool connect(serial::SerialPort* port, unsigned char id);
 	
 	/**
+	 * @brief Disconnects gripper module.
+	 * Stops listening thread.
+	 */
+	void disconnect();
+	
+	/* GET INFO */
+	/**
 	 * @brief Returns \b true if gripper is connected.
 	 */
 	bool isConnected() const;
 	
-	/* GET INFO */
 	/**
-	 * @brief Get gripper state.
-	 * Sends a GetState command to the gripper module and waits for response.
-	 * Updates state flags, and gripper information (position, velocity, current, error code).
+	 * @brief Returns \b true if gripper is referenced.
 	 */
-	unsigned short getState();
+	bool isReferenced() const;
+	
+	/**
+	 * @brief Returns \b true if gripper is moving.
+	 */
+	bool isMoving() const;
 	
 	/**
 	 * @brief Returns gripper's position.
-	 * Call getState() to update the current info first!
 	 */
 	float getPosition() const;
 	
 	/**
 	 * @brief Returns gripper's velocity.
-	 * Call getState() to update the current info first!
 	 */
 	float getVelocity() const;
 	
 	/**
 	 * @brief Returns gripper's current.
-	 * Call getState() to update the current info first!
 	 */
 	float getCurrent() const;
 	
@@ -83,13 +90,24 @@ public:
 	/**
 	 * @brief Reference gripper.
 	 * Attempts to reference the gripper.
-	 * @return \b true if referenced.
 	 */
-	bool home();
+	void home();
 
 private:
+	//! A function listening to gripper status.
+	void listenerFunc();
+	
 	serial::SerialPort* _port;
 	unsigned char _id;
+	
+	mutable boost::mutex _mtx;
+	boost::thread _listenerThread; // gripper listening thread
+	
+	volatile bool _connected;
+	volatile bool _referenced;
+	volatile float _position;
+	volatile float _velocity;
+	volatile float _current;
 	
 	/*
 	volatile unsigned short _status;
@@ -98,10 +116,7 @@ private:
 	volatile bool _error;
 	volatile unsigned short _errorCode;
 	mutable volatile bool _newInfo; // set by status thread when receiving new info
-	volatile float _position;
-	
-	mutable boost::mutex _statusMutex;
-	boost::thread _statusThread;*/
+	volatile float _position; */
 };
 
 }

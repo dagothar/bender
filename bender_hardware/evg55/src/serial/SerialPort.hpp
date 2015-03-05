@@ -32,7 +32,7 @@ public:
 	/**
 	 * @brief Reads data from the serial port (waits for all data).
 	 */
-	virtual bool read(char* buf, unsigned n) = 0;
+	virtual int read(char* buf, unsigned n) = 0;
 	
 	/**
 	 * @brief Reads data from the serial port (uses timeout).

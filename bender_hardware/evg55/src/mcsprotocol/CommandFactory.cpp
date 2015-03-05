@@ -3,17 +3,23 @@
 using namespace evg55::mcsprotocol;
 
 Command CommandFactory::makeReferenceCommand(Byte id) {
-	Command cmd(id);
-	
-	cmd.setCommand(Command::Reference);
+	Command cmd(id, Command::Reference);
 	
 	return cmd;
 }
 	
-Command makeGetStateCommand(Byte id) {
-	Command cmd(id);
+Command CommandFactory::makeGetStateCommand(Byte id, float interval) {
+	Command cmd(id, Command::GetState);
 	
-	cmd.setCommand(Command::GetState);
+	cmd.addParameter(interval);
+
+	return cmd;
+}
+
+Command CommandFactory::makeMovePositionCommand(Byte id, float pos) {
+	Command cmd(id, Command::MovePosition);
 	
+	cmd.addParameter(pos);
+
 	return cmd;
 }

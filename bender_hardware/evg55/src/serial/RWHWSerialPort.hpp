@@ -28,7 +28,7 @@ public:
 
 	virtual bool write(const char* buf, unsigned n);
 
-	virtual bool read(char* buf, unsigned n);
+	virtual int read(char* buf, unsigned n);
 
 	virtual bool read(char* buf, unsigned n, unsigned timeout);
 	

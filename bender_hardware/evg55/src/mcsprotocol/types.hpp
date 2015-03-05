@@ -1,6 +1,7 @@
 #ifndef _MCSPROTOCOL_TYPES_HPP
 #define _MCSPROTOCOL_TYPES_HPP
 
+#include <stdint.h>
 #include <vector>
 
 namespace evg55 {

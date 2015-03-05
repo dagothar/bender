@@ -12,10 +12,13 @@ namespace mcsprotocol {
 class DataConversion {
 public:
 	//! Converts float to byte vector.
-	//static
+	static ByteVector float2byteVector(float value);
+	
+	//! Converts byte vector to float.
+	static float byteVector2float(const ByteVector& bytes);
 	
 	//! Converts byte vector to unsigned int.
-	static unsigned int ByteVector2UnsignedInt(const ByteVector& bytes);
+	static unsigned int byteVector2unsignedInt(const ByteVector& bytes);
 };
 
 }

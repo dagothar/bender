@@ -11,12 +11,36 @@ namespace mcsprotocol {
  */
 class Response: public Packet {
 public:
+	//! Constructor.
 	Response();
+	
+	/**
+	 * @brief Constructor.
+	 */
+	Response(const ByteVector& rawData);
+	
+	//! Destructor.
 	virtual ~Response();
 	
-protected:
-
-private:
+	/**
+	 * @brief Check response sanity.
+	 * Response is ok, when:
+	 * - crc sum matches,
+	 * - the header is 0x07,
+	 * - response is of proper length
+	 * 
+	 * @return Returns \b true when response is formatted properly.
+	 */
+	bool isOk() const;
+	
+	//! Returns \b true if it's an acknowledgement ("OK") message.
+	bool isAcknowledgement() const;
+	
+	//! Returns \b true if it's an error message.
+	bool isError() const;
+	
+	//! Returns \b true if it's a GetState response.
+	bool isState() const;
 };
 
 }

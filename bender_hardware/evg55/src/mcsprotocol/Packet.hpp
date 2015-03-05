@@ -57,10 +57,18 @@ public:
 	void setDlen(Byte dlen);
 	ByteVector getData() const;
 	void setData(const ByteVector& data);
-	unsigned short getCrcSum() const;
 	
-	//! Updates the CRC sum.
-	unsigned short updateCrc();
+	//! Returns \b true if packet contains a proper CRC sum.
+	bool checkCrc() const;
+	
+	//! Returns CRC sum contained in the packet.
+	uint16_t getCrcSum() const;
+	
+	//! Calculates new CRC sum.
+	uint16_t calculateCrcSum() const;
+	
+	//! Updates the CRC sum in the packet.
+	uint16_t updateCrc();
 	
 	/* FRIENDS */
 	//! Stream output operator.

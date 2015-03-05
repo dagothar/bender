@@ -32,7 +32,7 @@ bool RWHWSerialPort::write(const char* buf, unsigned n) {
 	return _port->write(buf, n);
 }
 
-bool RWHWSerialPort::read(char* buf, unsigned n) {
+int RWHWSerialPort::read(char* buf, unsigned n) {
 	return _port->read(buf, n);
 }
 

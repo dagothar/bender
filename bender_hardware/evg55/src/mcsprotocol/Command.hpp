@@ -22,21 +22,23 @@ public:
 		EmergencyStop = 0x90,
 		GetState = 0x95,
 		Reboot = 0xe0,
-		Acknowledge = 0x8b
+		Acknowledge = 0x8b,
+		Error = 0x03
 	};
 public:
 	/**
 	 * @brief Constructor.
 	 * Creates an empty command to be sent to module with \b id.
 	 */
-	Command(Byte id);
+	Command(Byte id, Byte cmd);
 	
 	//! Destructor.
 	virtual ~Command();
 	
-protected:
-
-private:
+	/**
+	 * @brief Adds a float type parameter to the command.
+	 */
+	void addParameter(float value);
 };
 
 }
