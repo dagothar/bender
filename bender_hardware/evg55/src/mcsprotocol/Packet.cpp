@@ -6,8 +6,8 @@
 #include <crc/SchunkCRC16.hpp>
 
 using namespace std;
-using namespace mcsprotocol;
-using namespace crc;
+using namespace evg55::mcsprotocol;
+using namespace evg55::crc;
 
 
 
@@ -133,7 +133,7 @@ unsigned short Packet::updateCrc() {
 	return crcSum;
 }
 
-std::ostream& mcsprotocol::operator<<(std::ostream& stream, const Packet& packet) {
+std::ostream& evg55::mcsprotocol::operator<<(std::ostream& stream, const Packet& packet) {
 	// save stream state
 	ios init(NULL);
     init.copyfmt(stream);

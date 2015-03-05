@@ -2,6 +2,7 @@
 
 using namespace rwhw;
 using namespace rw::common;
+using namespace evg55::serial;
 
 
 

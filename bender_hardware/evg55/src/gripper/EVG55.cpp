@@ -5,6 +5,8 @@
 #include "GripperException.hpp"
 
 using namespace std;
+using namespace evg55::serial;
+using namespace evg55::gripper;
 
 EVG55::EVG55() :
 	_port(NULL),

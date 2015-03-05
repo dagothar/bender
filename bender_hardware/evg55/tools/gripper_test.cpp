@@ -4,6 +4,7 @@
 #include <serial/RWHWSerialPort.hpp>
 
 using namespace std;
+using namespace evg55::serial;
 
 
 

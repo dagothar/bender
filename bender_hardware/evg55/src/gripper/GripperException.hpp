@@ -4,7 +4,8 @@
 #include <stdexcept>
 #include <sstream>
 
-
+namespace evg55 {
+namespace gripper {
 
 /**
  * Base class for gripper exceptions.
@@ -66,5 +67,8 @@ public:
 private:
 	unsigned short _error;
 };
+
+}
+}
 
 #endif // _GRIPPEREXCEPTION_HPP

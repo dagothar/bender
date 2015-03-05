@@ -6,6 +6,7 @@
 #include "types.hpp"
 #include "PacketException.hpp"
 
+namespace evg55 {
 namespace mcsprotocol {
 
 /**
@@ -58,6 +59,9 @@ public:
 	void setData(const ByteVector& data);
 	unsigned short getCrcSum() const;
 	
+	//! Updates the CRC sum.
+	unsigned short updateCrc();
+	
 	/* FRIENDS */
 	//! Stream output operator.
 	friend std::ostream& operator<<(std::ostream& stream, const Packet& packet);
@@ -68,9 +72,6 @@ protected:
 	
 	//! Returns the index of the beginning of the CRC sum.
 	inline unsigned getCrcIndex() const;
-	
-	//! Updates the CRC sum.
-	unsigned short updateCrc();
 
 private:
 	ByteVector _packet;
@@ -78,6 +79,7 @@ private:
 
 std::ostream& operator<<(std::ostream& stream, const Packet& packet);
 
+}
 }
 
 #endif // _MCSPROTOCOL_PACKET_HPP

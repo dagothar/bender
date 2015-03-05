@@ -3,7 +3,8 @@
 
 #include <string>
 
-
+namespace evg55 {
+namespace serial {
 
 /**
  * Interface for serial port implementations.
@@ -43,5 +44,8 @@ public:
 	 */
 	virtual void clean() = 0;
 };
+
+}
+}
 
 #endif // _SERIAL_PORT_HPP

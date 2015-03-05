@@ -1,6 +1,6 @@
 #include "SchunkCRC16.hpp"
 
-using namespace crc;
+using namespace evg55::crc;
 
 uint16_t SchunkCRC16::crc(const std::vector<unsigned char> data) {
 	uint16_t crcSum = 0;

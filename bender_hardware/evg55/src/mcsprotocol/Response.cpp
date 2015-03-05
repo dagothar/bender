@@ -1,6 +1,6 @@
 #include "Response.hpp"
 
-using namespace mcsprotocol;
+using namespace evg55::mcsprotocol;
 
 Response::Response() {
 }

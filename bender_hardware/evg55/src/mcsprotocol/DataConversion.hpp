@@ -3,6 +3,7 @@
 
 #include "types.hpp"
 
+namespace evg55 {
 namespace mcsprotocol {
 	
 /**
@@ -17,6 +18,7 @@ public:
 	static unsigned int ByteVector2UnsignedInt(const ByteVector& bytes);
 };
 
+}
 }
 
 #endif // _MCSPROTOCOL_DATACONVERSION_HPP

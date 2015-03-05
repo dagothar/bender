@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <vector>
 
+namespace evg55 {
 namespace crc {
 
 /**
@@ -21,6 +22,7 @@ public:
 	virtual uint16_t crc(const std::vector<unsigned char> data) = 0;
 };
 
+}
 }
 
 #endif // _CRC_HPP

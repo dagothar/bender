@@ -3,7 +3,8 @@
 
 #include <serial/SerialPort.hpp>
 
-
+namespace evg55 {
+namespace gripper {
 
 class EVG55 {
 public:
@@ -45,7 +46,7 @@ public:
 	 * @param id [in] module id
 	 * @return \b true if connections succesful, \b false otherwise
 	 */
-	bool connect(SerialPort* port, unsigned char id);
+	bool connect(serial::SerialPort* port, unsigned char id);
 	
 	/**
 	 * @brief Returns \b true if gripper is connected.
@@ -87,7 +88,7 @@ public:
 	bool home();
 
 private:
-	SerialPort* _port;
+	serial::SerialPort* _port;
 	unsigned char _id;
 	
 	/*
@@ -102,5 +103,8 @@ private:
 	mutable boost::mutex _statusMutex;
 	boost::thread _statusThread;*/
 };
+
+}
+}
 
 #endif // _EVG55_HPP

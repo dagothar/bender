@@ -5,7 +5,8 @@
 #include <rwhw/serialport/SerialPort.hpp>
 #include "SerialPort.hpp"
 
-
+namespace evg55 {
+namespace serial {
 
 /**
  * Implements serial port interface using RWHW SerialPort
@@ -36,5 +37,8 @@ public:
 private:
 	rwhw::SerialPort::Ptr _port;
 };
+
+}
+}
 
 #endif // _RWHW_SERIAL_PORT_HPP

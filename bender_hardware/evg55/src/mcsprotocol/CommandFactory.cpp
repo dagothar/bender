@@ -1,6 +1,6 @@
 #include "CommandFactory.hpp"
 
-using namespace mcsprotocol;
+using namespace evg55::mcsprotocol;
 
 Command CommandFactory::makeReferenceCommand(Byte id) {
 	Command cmd(id);

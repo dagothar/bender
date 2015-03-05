@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 
+namespace evg55 {
 namespace mcsprotocol {
 
 /**
@@ -37,6 +38,7 @@ public:
 	}
 };
 
+}
 }
 
 #endif // _MCSPROTOCOL_PACKETEXCEPTION_HPP

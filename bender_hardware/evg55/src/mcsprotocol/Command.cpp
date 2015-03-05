@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-using namespace mcsprotocol;
+using namespace evg55::mcsprotocol;
 
 Command::Command(Byte id) {
 }

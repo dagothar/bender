@@ -3,6 +3,7 @@
 
 #include "Command.hpp"
 
+namespace evg55 {
 namespace mcsprotocol {
 
 /**
@@ -21,6 +22,7 @@ public:
 	static Command makeGetStateCommand(Byte id);
 };
 
+}
 }
 
 #endif // _MCSPROTOCOL_COMMANDFACTORY_HPP

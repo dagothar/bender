@@ -3,6 +3,7 @@
 
 #include "CRC.hpp"
 
+namespace evg55 {
 namespace crc {
 
 class SchunkCRC16: public CRC {
@@ -17,6 +18,7 @@ protected:
 	virtual uint16_t doCrc(uint16_t prevCrc, unsigned char data);
 };
 
+}
 }
 
 #endif // _CRC_SCHUNKCRC16_HPP

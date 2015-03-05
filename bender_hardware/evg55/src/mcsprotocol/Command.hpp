@@ -3,6 +3,7 @@
 
 #include "Packet.hpp"
 
+namespace evg55 {
 namespace mcsprotocol {
 
 /**
@@ -38,6 +39,7 @@ protected:
 private:
 };
 
+}
 }
 
 #endif // _COMMAND_HPP
