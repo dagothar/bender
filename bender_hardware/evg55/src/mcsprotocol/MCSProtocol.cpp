@@ -5,6 +5,7 @@
 #include <crc/SchunkCRC16.hpp>
 
 using namespace std;
+using namespace crc;
 
 void MCSProtocol::printPacket(const MCSProtocol::Packet& msg) {
 	ios init(NULL);

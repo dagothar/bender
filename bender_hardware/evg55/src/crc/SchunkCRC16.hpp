@@ -1,9 +1,9 @@
-#ifndef _SCHUNKCRC16_HPP
-#define _SCHUNKCRC16_HPP
+#ifndef _CRC_SCHUNKCRC16_HPP
+#define _CRC_SCHUNKCRC16_HPP
 
 #include "CRC.hpp"
 
-
+namespace crc {
 
 class SchunkCRC16: public CRC {
 public:
@@ -17,4 +17,6 @@ protected:
 	virtual uint16_t doCrc(uint16_t prevCrc, unsigned char data);
 };
 
-#endif // _SCHUNKCRC16_HPP
+}
+
+#endif // _CRC_SCHUNKCRC16_HPP

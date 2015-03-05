@@ -1,9 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <unistd.h>
-#include "RWHWSerialPort.hpp"
-#include "SchunkEVG55Gripper.hpp"
-#include "MCSProtocol.hpp"
+#include <serial/RWHWSerialPort.hpp>
 
 using namespace std;
 
@@ -14,30 +12,9 @@ int main() {
 	SerialPort* port = new RWHWSerialPort();
 	port->open("/dev/ttyUSB0", 9600);
 	
-	// create the gripper
-	Gripper* gripper = new SchunkEVG55Gripper();
+	/* TEST CODE */
 	
-	gripper->connect(port);
-	cout << gripper->isConnected() << endl;
-	
-	// reference gripper
-	gripper->home();
-	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
-	
-	// move gripper
-	gripper->setConfiguration(35.0);
-	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
-	
-	gripper->setConfiguration(15.0);
-	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
-	
-	gripper->setConfiguration(25.0);
-	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
-	
-	gripper->close();
-	cout << gripper->getStatus() << " " << gripper->getConfiguration() << endl;
-	
-	delete gripper;
+	/* /TEST CODE */
 	
 	port->close();
 	delete port;
