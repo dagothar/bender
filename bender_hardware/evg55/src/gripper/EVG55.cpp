@@ -32,33 +32,21 @@ bool EVG55::connect(SerialPort* port, unsigned char id) {
 	_port = port;
 	_id = id;
 	
-	// set state sending interval to 0.1 s
-	Command cmd = CommandFactory::makeGetStateCommand(_id, 0.1);
-	MCSProtocol::send(_port, cmd);
-	
-	boost::lock_guard<boost::mutex> guard(_mtx);
 	_connected = true;
-	
-	// launch listening thread
-	boost::function<void(void)> f = boost::bind(&EVG55::listenerFunc, this);
-	_listenerThread = boost::thread(f);
 	
 	return _connected;
 }
 
 void EVG55::disconnect() {
-	// reset state sending interval
-	Command cmd = CommandFactory::makeGetStateCommand(_id, 0.0);
-	MCSProtocol::send(_port, cmd);
-	
 	_connected = false;
-	_listenerThread.join();
 }
 
 bool EVG55::isConnected() const {
-	boost::lock_guard<boost::mutex> guard(_mtx);
-	
 	return _connected;
+}
+
+float EVG55::getPosition() const {
+	return _position;
 }
 
 void EVG55::home() {
@@ -66,13 +54,13 @@ void EVG55::home() {
 	MCSProtocol::send(_port, refCmd);
 }
 
-void EVG55::listenerFunc() {
+/*void EVG55::listenerFunc() {
 	const int maxMissedCount = 100;
 	
 	int missedCount = 0;
 	
 	while (isConnected()) {
-		usleep(1);
+		//usleep(1);
 		
 		// try to read a new response
 		Response response;
@@ -93,8 +81,14 @@ void EVG55::listenerFunc() {
 		
 		// decode message
 		ByteVector state = response.getData();
-		//float position = DataConversion::byteV
+		float position = DataConversion::byteVector2float(ByteVector(state.begin(), state.begin() + 4));
 		
-		cout << response << endl;
+		{
+			boost::lock_guard<boost::mutex> guard(_mtx);
+			
+			_position = position;
+		}
+		
+		//cout << response << endl;
 	}
-}
+}*/

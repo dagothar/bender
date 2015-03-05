@@ -1,7 +1,6 @@
 #ifndef _EVG55_HPP
 #define _EVG55_HPP
 
-#include <boost/thread.hpp>
 #include <serial/SerialPort.hpp>
 
 namespace evg55 {
@@ -45,13 +44,12 @@ public:
 	 * Specify a correct module id.
 	 * @param port [in] serial port to use
 	 * @param id [in] module id
-	 * @return \b true if connections succesful, \b false otherwise
+	 * @return \b true if connection succesful, \b false otherwise
 	 */
 	bool connect(serial::SerialPort* port, unsigned char id);
 	
 	/**
 	 * @brief Disconnects gripper module.
-	 * Stops listening thread.
 	 */
 	void disconnect();
 	
@@ -100,23 +98,11 @@ private:
 	serial::SerialPort* _port;
 	unsigned char _id;
 	
-	mutable boost::mutex _mtx;
-	boost::thread _listenerThread; // gripper listening thread
-	
-	volatile bool _connected;
-	volatile bool _referenced;
-	volatile float _position;
-	volatile float _velocity;
-	volatile float _current;
-	
-	/*
-	volatile unsigned short _status;
-	volatile bool _connected;
-	volatile bool _referenced;
-	volatile bool _error;
-	volatile unsigned short _errorCode;
-	mutable volatile bool _newInfo; // set by status thread when receiving new info
-	volatile float _position; */
+	bool _connected;
+	bool _referenced;
+	float _position;
+	float _velocity;
+	float _current;
 };
 
 }

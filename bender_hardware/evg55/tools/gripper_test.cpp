@@ -21,7 +21,12 @@ int main() {
 	
 	/* TEST CODE */
 	gripper.home();
-	sleep(10);
+	
+	int t = 0;
+	while (t++ < 15) {
+		sleep(1);
+		cout << "Position: " << gripper.getPosition() << endl;
+	}
 	
 	/* /TEST CODE */
 	
