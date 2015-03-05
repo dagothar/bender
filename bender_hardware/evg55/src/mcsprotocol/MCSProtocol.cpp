@@ -12,6 +12,7 @@ bool MCSProtocol::send(SerialPort* port, const Command& command) {
 		buf[i] = command[i];
 	}
 	
+	port->clean();
 	return port->write(buf, command.size());
 }
 
@@ -23,6 +24,7 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	
 	// read incoming message
 	port->read(buf, BUF_LEN, 200);
+	port->clean();
 	
 	// copy message to response
 	size_t msgLength = 5 + static_cast<unsigned char>(buf[2]);

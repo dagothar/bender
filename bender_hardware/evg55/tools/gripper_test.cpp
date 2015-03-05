@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <unistd.h>
 #include <serial/RWHWSerialPort.hpp>
 #include <gripper/EVG55.hpp>
@@ -20,13 +21,38 @@ int main() {
 	gripper.connect(port, 0x0c);
 	
 	/* TEST CODE */
+	// test referencing
 	gripper.home();
 	
-	int t = 0;
-	while (t++ < 15) {
-		sleep(1);
-		cout << "Position: " << gripper.getPosition() << endl;
+	while (gripper.isOk() && !gripper.isReferenced()) {
+		cout << "Referencing..." << endl;
+		usleep(100);
 	}
+	
+	if (gripper.getErrorCode() == 0) {
+		cout << "Referencing succesful" << endl;
+	}
+	
+	// test move to position
+	bool success = gripper.moveWait(10.0);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	
+	success = gripper.moveWait(15.0);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	
+	success = gripper.moveWait(245.0);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	
+	success = gripper.moveWait(75.0);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	
+	success = gripper.moveWait(15.0);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
 	
 	/* /TEST CODE */
 	

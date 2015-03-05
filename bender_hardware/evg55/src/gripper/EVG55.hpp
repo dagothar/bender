@@ -55,24 +55,45 @@ public:
 	
 	/* GET INFO */
 	/**
-	 * @brief Returns \b true if gripper is connected.
+	 * @brief Polls gripper module for new information.
 	 */
-	bool isConnected() const;
+	bool poll();
+	
+	/**
+	 * @brief Returns gripper state bytes.
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
+	 */
+	unsigned short getStatus(bool doPoll = false);
+	
+	/**
+	 * @brief Returns \b true if gripper is connected.
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
+	 */
+	bool isConnected(bool doPoll = true);
+	
+	/**
+	 * @brief Returns \b true if gripper is in OK state, and \b false if there is any kind of error.
+	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information.
+	 */
+	bool isOk(bool doPoll = true);
 	
 	/**
 	 * @brief Returns \b true if gripper is referenced.
+	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
 	 */
-	bool isReferenced() const;
+	bool isReferenced(bool doPoll = false);
 	
 	/**
 	 * @brief Returns \b true if gripper is moving.
+	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
 	 */
-	bool isMoving() const;
+	bool isMoving(bool doPoll = false);
 	
 	/**
 	 * @brief Returns gripper's position.
+	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
 	 */
-	float getPosition() const;
+	float getPosition(bool doPoll = false);
 	
 	/**
 	 * @brief Returns gripper's velocity.
@@ -84,13 +105,32 @@ public:
 	 */
 	float getCurrent() const;
 	
+	/**
+	 * @brief Returns gripper error code.
+	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
+	 */
+	unsigned char getErrorCode(bool doPoll = false);
+	
 	/* COMMAND API */
 	/**
-	 * @brief Reference gripper.
+	 * @brief Sends reference gripper command.
 	 * Attempts to reference the gripper.
 	 */
 	void home();
-
+	
+	/**
+	 * @brief Sends move gripper to position command.
+	 * @param pos [in] position in mm
+	 */
+	void move(float pos);
+	
+	/**
+	 * @brief Send move to position command, and wait till move complete.
+	 * @param pos [in] position in mm
+	 * @return \b true if position reached succesfully
+	 */
+	bool moveWait(float pos);
+	
 private:
 	//! A function listening to gripper status.
 	void listenerFunc();
@@ -99,10 +139,13 @@ private:
 	unsigned char _id;
 	
 	bool _connected;
+	bool _ok;
 	bool _referenced;
 	float _position;
 	float _velocity;
 	float _current;
+	volatile unsigned short _status;
+	unsigned char _errorCode;
 };
 
 }

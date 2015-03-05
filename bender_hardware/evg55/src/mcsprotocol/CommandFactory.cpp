@@ -23,3 +23,11 @@ Command CommandFactory::makeMovePositionCommand(Byte id, float pos) {
 
 	return cmd;
 }
+
+Command CommandFactory::makeMoveGripCommand(Byte id, float cur) {
+	Command cmd(id, Command::MoveGrip);
+	
+	cmd.addParameter(cur);
+
+	return cmd;
+}

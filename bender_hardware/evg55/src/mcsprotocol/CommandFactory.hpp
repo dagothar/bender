@@ -26,9 +26,17 @@ public:
 	/**
 	 * @brief Creates a MovePosition command.
 	 * @param id [in] module id
-	 * @param pos [in] gripepr opening (in dm?)
+	 * @param pos [in] gripper opening (in mm)
 	 */
 	static Command makeMovePositionCommand(Byte id, float pos);
+	
+	/**
+	 * @brief Creates a MoveGrip command.
+	 * Executes a gripping movement with current limit.
+	 * @param id [in] module id
+	 * @param cur [in] current limit (in A)
+	 */
+	static Command makeMoveGripCommand(Byte id, float cur);
 };
 
 }
