@@ -38,5 +38,5 @@ bool Response::isError() const {
 }
 
 bool Response::isState() const {
-	return getCommand() == Command::GetState && getDlen() == 0x0f;
+	return true; getCommand() == Command::GetState; // && getDlen() == 0x0f;
 }

@@ -44,6 +44,12 @@ bool EVG55::connect(SerialPort* port, unsigned char id) {
 void EVG55::disconnect() {
 	_connected = false;
 }
+
+void EVG55::clearError() {
+	Command ackCmd = CommandFactory::makeAcknowledgementCommand(_id);
+	MCSProtocol::send(_port, ackCmd);
+}
+
 bool EVG55::poll() {
 	const int maxMissedCount = 10;
 	
@@ -59,7 +65,7 @@ bool EVG55::poll() {
 	while (missedCount <= maxMissedCount) {
 		usleep(100);
 		
-		if (MCSProtocol::receive(_port, response)) {
+		if (MCSProtocol::receive(_port, response) && response.isState()) {
 			break;
 		} else {
 			++missedCount;
@@ -149,8 +155,19 @@ void EVG55::home() {
 }
 
 void EVG55::move(float pos) {
-	Command refCmd = CommandFactory::makeMovePositionCommand(_id, pos);
-	MCSProtocol::send(_port, refCmd);
+	int count = 0;
+	
+	while (count++ < MoveTimeout) {
+		Command moveCmd = CommandFactory::makeMovePositionCommand(_id, pos);
+		MCSProtocol::send(_port, moveCmd);
+		
+		Response response;
+		if (MCSProtocol::receive(_port, response) && response.getCommand() == Command::MovePosition) break;
+		
+		usleep(100);
+	}
+	
+	//cout << "Response: " << response << endl;
 }
 
 bool EVG55::moveWait(float pos) {
@@ -158,11 +175,14 @@ bool EVG55::moveWait(float pos) {
 	
 	// wait till in position
 	// TODO: add timeout && error checking
-	while (isOk() && fabs(getPosition() - pos) > 1.0) {
-		usleep(100);
+	int time = 0;
+	while (isOk() && fabs(getPosition() - pos) > 1.0 && time++ < MoveTimeout) {
+		usleep(100000);
 		
 		if (_status & StatusMoveEnd) break;
 	}
+	
+	poll();
 	
 	// check if at destination
 	if (isOk() && fabs(getPosition() - pos) < 1.0) {
@@ -170,4 +190,9 @@ bool EVG55::moveWait(float pos) {
 	}
 	
 	return false;
+}
+
+void EVG55::close() {
+	Command closeCmd = CommandFactory::makeMoveGripCommand(_id, -MaxCurrent);
+	MCSProtocol::send(_port, closeCmd);
 }

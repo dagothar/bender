@@ -17,6 +17,11 @@ public:
 	static Command makeReferenceCommand(Byte id);
 	
 	/**
+	 * @brief Creates an error acknowledgement command.
+	 */
+	static Command makeAcknowledgementCommand(Byte id);
+	
+	/**
 	 * @brief Creates a GetState command.
 	 * @param id [in] module id
 	 * @param interval [in] interval for sending state info from module (in seconds)

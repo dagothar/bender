@@ -22,6 +22,6 @@ float DataConversion::byteVector2float(const ByteVector& bytes) {
 
 unsigned int DataConversion::byteVector2unsignedInt(const ByteVector& bytes) {
 	unsigned char buf[2] = { bytes[0], bytes[1] };
-	const unsigned int* result = reinterpret_cast<unsigned int*>(buf);
+	const unsigned short* result = reinterpret_cast<unsigned short*>(buf);
 	return *result;
 }

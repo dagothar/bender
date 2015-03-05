@@ -22,9 +22,15 @@ public:
 	
 	//! Error codes.
 	enum Error {
-		ErrorSoftLow = 0x0d5
+		ErrorSoftLow = 0xd5
 		//TODO: add all flags
 	};
+	
+	//! Timeout for move commands
+	static const int MoveTimeout = 100; // 10? s
+	
+	//! Max gripping current
+	static const float MaxCurrent = 1.0;
 	
 public:
 	/* CONSTRUCTORS */
@@ -52,6 +58,12 @@ public:
 	 * @brief Disconnects gripper module.
 	 */
 	void disconnect();
+	
+	/**
+	 * @brief Sends error acknowledgement command.
+	 * Attempts to clear error state of the module.
+	 */
+	void clearError();
 	
 	/* GET INFO */
 	/**
@@ -130,6 +142,12 @@ public:
 	 * @return \b true if position reached succesfully
 	 */
 	bool moveWait(float pos);
+	
+	/**
+	 * @brief Closes gripper.
+	 * Waits till move completed.
+	 */
+	void close();
 	
 private:
 	//! A function listening to gripper status.

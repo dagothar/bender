@@ -7,6 +7,12 @@ Command CommandFactory::makeReferenceCommand(Byte id) {
 	
 	return cmd;
 }
+
+Command CommandFactory::makeAcknowledgementCommand(Byte id) {
+	Command cmd(id, Command::Acknowledge);
+	
+	return cmd;
+}
 	
 Command CommandFactory::makeGetStateCommand(Byte id, float interval) {
 	Command cmd(id, Command::GetState);

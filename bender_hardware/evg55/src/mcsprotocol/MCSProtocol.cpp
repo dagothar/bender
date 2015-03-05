@@ -23,7 +23,7 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	for (int i = 0; i < BUF_LEN; buf[i++] = 0);
 	
 	// read incoming message
-	port->read(buf, BUF_LEN, 200);
+	port->read(buf, BUF_LEN, 50);
 	port->clean();
 	
 	// copy message to response

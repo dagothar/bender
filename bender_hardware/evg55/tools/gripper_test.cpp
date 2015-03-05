@@ -20,6 +20,8 @@ int main() {
 	EVG55 gripper;
 	gripper.connect(port, 0x0c);
 	
+	if (!gripper.isOk()) gripper.clearError();
+	
 	/* TEST CODE */
 	// test referencing
 	gripper.home();
@@ -42,7 +44,7 @@ int main() {
 	gripper.poll();
 	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
 	
-	success = gripper.moveWait(245.0);
+	success = gripper.moveWait(5.0);
 	gripper.poll();
 	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
 	
@@ -51,6 +53,16 @@ int main() {
 	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
 	
 	success = gripper.moveWait(15.0);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	
+	gripper.close();
+	sleep(2);
+	gripper.poll();
+	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	
+	cout << +gripper.getErrorCode() << endl;
+	//gripper.clearError();
 	gripper.poll();
 	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
 	
