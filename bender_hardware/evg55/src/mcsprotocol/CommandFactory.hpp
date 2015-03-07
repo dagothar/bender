@@ -12,6 +12,11 @@ namespace mcsprotocol {
 class CommandFactory {
 public:
 	/**
+	 * @brief Make module reboot command.
+	 */
+	static Command makeRebootCommand(Byte id);
+	
+	/**
 	 * @brief Creates a Reference command.
 	 */
 	static Command makeReferenceCommand(Byte id);
@@ -20,6 +25,11 @@ public:
 	 * @brief Creates an error acknowledgement command.
 	 */
 	static Command makeAcknowledgementCommand(Byte id);
+	
+	/**
+	 * @brief Creates a toggle impulse messages command.
+	 */
+	static Command makeToggleImpulseMessagesCommand(Byte id);
 	
 	/**
 	 * @brief Creates a GetState command.

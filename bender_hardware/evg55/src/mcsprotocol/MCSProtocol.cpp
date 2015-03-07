@@ -3,6 +3,8 @@
 #include <iostream>
 #include <unistd.h>
 
+#define LOG
+
 using namespace std;
 using namespace evg55::mcsprotocol;
 using namespace evg55::serial;
@@ -13,8 +15,10 @@ bool MCSProtocol::send(SerialPort* port, const Command& command) {
 		buf[i] = command[i];
 	}
 	
-	
-	//cout << command << endl;
+#ifdef LOG
+	cout << "Sending: " << command << endl;
+#endif
+
 	port->clean();
 	return port->write(buf, command.size());
 }
@@ -26,8 +30,8 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	for (int i = 0; i < BUF_LEN; buf[i++] = 0);
 	
 	// read incoming message
-	port->read(buf, BUF_LEN, 50);
-	port->clean();
+	port->read(buf, BUF_LEN, 300);
+	//port->clean();
 	
 	// copy message to response
 	size_t msgLength = 5 + static_cast<unsigned char>(buf[2]);
@@ -38,26 +42,42 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	
 	response = Response(message);
 	
+#ifdef LOG
+	cout << "Received: " << response << endl;
+#endif
+	
 	return response.isOk();
 }
 
 bool MCSProtocol::ack(serial::SerialPort* port, const Command& command, Response& response, unsigned tries) {
 	unsigned count = 0;
-	
-	while (!receive(port, response)) {
-		usleep(1000);
+
+#ifdef LOG
+	cout << "ACK {" << endl;
+#endif
+	do {
+		usleep(100);
 		
-		count++;
-		if (count > tries) {
-			return false;
+		++count;
+		if (!receive(port, response)) {
+			continue;
 		}
-	}
+		
+		//cout << response << endl;
+		
+		if (command.getCommand() == response.getCommand()) {
+			
+#ifdef LOG
+			cout << "}" << endl;
+#endif
+
+			return true;
+		}
+	} while(count < tries);
 	
-	//cout << response << endl;
-	
-	if (command.getCommand() == response.getCommand()) {
-		return true;
-	}
+#ifdef LOG
+	cout << "}" << endl;
+#endif
 	
 	return false;
 }

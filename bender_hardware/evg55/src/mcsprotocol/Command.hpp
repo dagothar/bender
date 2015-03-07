@@ -25,7 +25,9 @@ public:
 		Acknowledge = 0x8b,
 		Error = 0x03,
 		SetTargetVelocity = 0xa0,
-		SetTargetCurrent = 0xa3
+		SetTargetCurrent = 0xa3,
+		ToggleImpulseMessages = 0xe7,
+		PositionReached = 0x94
 	};
 public:
 	/**

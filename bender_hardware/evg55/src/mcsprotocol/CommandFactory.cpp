@@ -2,6 +2,12 @@
 
 using namespace evg55::mcsprotocol;
 
+Command CommandFactory::makeRebootCommand(Byte id) {
+	Command cmd(id, Command::Reboot);
+	
+	return cmd;
+}
+
 Command CommandFactory::makeReferenceCommand(Byte id) {
 	Command cmd(id, Command::Reference);
 	
@@ -13,11 +19,19 @@ Command CommandFactory::makeAcknowledgementCommand(Byte id) {
 	
 	return cmd;
 }
+
+Command CommandFactory::makeToggleImpulseMessagesCommand(Byte id) {
+	Command cmd(id, Command::ToggleImpulseMessages);
+	
+	return cmd;
+}
 	
 Command CommandFactory::makeGetStateCommand(Byte id, float interval) {
 	Command cmd(id, Command::GetState);
 	
-	cmd.addParameter(interval);
+	if (interval > 0.0) {
+		cmd.addParameter(interval);
+	}
 
 	return cmd;
 }

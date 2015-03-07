@@ -96,7 +96,7 @@ public:
 	 * @brief Returns \b true if gripper is in OK state, and \b false if there is any kind of error.
 	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information.
 	 */
-	bool isOk(bool doPoll = true);
+	bool isOk(bool doPoll = false);
 	
 	/**
 	 * @brief Returns \b true if gripper is referenced.

@@ -38,7 +38,9 @@ bool EVG55::connect(SerialPort* port, unsigned char id) {
 	_port = port;
 	_id = id;
 	
-	_connected = true;
+	// toggle impulse messages
+	
+	_connected = poll();
 	
 	return _connected;
 }
@@ -53,47 +55,33 @@ bool EVG55::clearError() {
 		return false;
 	}
 	
-	clock_t t0 = clock();
-	do {
-		usleep(10000);
-		
-		if (isOk()) {
-			return true;
-		}
-
-	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
+	sleep(1);
 	
-	cout << "Clear error failed" << endl;
+	poll();
 	
-	return false;
+	return isOk();
 }
 
 bool EVG55::poll() {
-	const int maxMissedCount = 10;
-	
-	// send get state request
-	_port->clean();
-	
+	// send get state request	
 	Command getStateCmd = CommandFactory::makeGetStateCommand(_id);
-	MCSProtocol::send(_port, getStateCmd);
 	Response response;
 	
-	// wait for proper response
-	int missedCount = 0;
-	while (missedCount <= maxMissedCount) {
-		usleep(10000);
+	// try to getstate several times to deal with nasty impulse commands breaking up communication...
+	int count = 0;
+	bool received = false;
+	do {
+		MCSProtocol::send(_port, getStateCmd);
+		received = MCSProtocol::ack(_port, getStateCmd, response, 10);
 		
-		if (MCSProtocol::receive(_port, response) && response.isState()) {
-			break;
-		} else {
-			++missedCount;
+		if (!received) {
+			if (++count > 10) {
+				cout << "Connection lost" << endl;
+				_connected = false;
+				return false;
+			}
 		}
-	}
-	
-	if (missedCount > maxMissedCount) {
-		_connected = false;
-		return false;
-	}
+	} while (!received);
 	
 	// decode state message
 	ByteVector state = response.getData();
@@ -105,7 +93,7 @@ bool EVG55::poll() {
 	// decode status
 	_referenced = _status & StatusReferenced;
 	_errorCode = (_status & 0xff00) >> 8;
-	_ok = !(_status & StatusError) && _errorCode == 0;
+	_ok = !(_status & StatusError);
 
 	_connected = true;
 	return true;
@@ -167,7 +155,9 @@ bool EVG55::home() {
 	
 	clock_t t0 = clock();
 	do {
-		usleep(10000);
+		usleep(1000);
+		
+		poll();
 		
 		if (!isOk()) {
 			break;
@@ -205,6 +195,8 @@ bool EVG55::move(float pos) {
 	do {
 		usleep(10000);
 		
+		poll();
+		
 		if (!isOk()) {
 			break;
 		}
@@ -237,12 +229,14 @@ bool EVG55::close() {
 		// check if it's the soft limit
 		if (_errorCode == 0xd5) {
 			cout << "Soft limit reached, clearing error byte" << endl;
-			clearError();
+			if (!clearError()) {
+				break;
+			}
+			
 			continue;
 		}
 		
 		if (!isOk(false)) {
-			
 			break;
 		}
 		

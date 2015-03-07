@@ -18,18 +18,16 @@ int main() {
 	
 	// create gripper
 	EVG55 gripper;
-	gripper.connect(port, 0x0c);
-	
-	if (!gripper.isOk()) gripper.clearError();
+	if (!gripper.connect(port, 0x0c)) {
+		cout << "Cannot connect to the gripper module" << endl;
+	}
 	
 	/* TEST CODE */
 	// check for error and clear if any
-	if (!gripper.isOk()) {
-		cout << "Gripper error, trying to clear..." << endl;
+	/*if (!gripper.isOk(true)) {
+		cout << "Gripper error " << +gripper.getErrorCode() << " - trying to clear..." << endl;
 		
-		gripper.clearError();
-		
-		if (!gripper.isOk()) {
+		if (!gripper.clearError()) {
 			cout << "Error occured" << endl;
 		
 			port->close();
@@ -37,27 +35,23 @@ int main() {
 			
 			return -1;
 		}
-	}
+	}*/
 	
 	// test referencing
-	do {
-		cout << "Referencing..." << endl;
-		
-		gripper.home();
-		sleep(1);
-		
-	} while (gripper.isOk() && !gripper.isReferenced());
-	
-	if (!gripper.isOk(false)) {
+	cout << "Referencing: " << endl;
+	if (!gripper.home()) {
 		cout << "Error occured" << endl;
 		
 		port->close();
 		delete port;
 		
 		return -1;
+	} else {
+		cout << "succesful" << endl;
 	}
 	
 	// test move to position
+	cout << "Moving: " << endl;
 	gripper.move(10.0);
 	cout << gripper.getPosition(true) << endl;
 	
@@ -65,8 +59,10 @@ int main() {
 	cout << gripper.getPosition(true) << endl;
 	
 	sleep(1);
-	gripper.close();
-	sleep(1);
+	
+	// test closing
+	cout << "Closing: " << endl;
+	//gripper.close();
 	
 	cout << hex << +gripper.getErrorCode(true) << endl;
 	
