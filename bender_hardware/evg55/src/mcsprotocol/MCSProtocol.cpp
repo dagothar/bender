@@ -1,6 +1,7 @@
 #include "MCSProtocol.hpp"
 
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 using namespace evg55::mcsprotocol;
@@ -12,6 +13,8 @@ bool MCSProtocol::send(SerialPort* port, const Command& command) {
 		buf[i] = command[i];
 	}
 	
+	
+	//cout << command << endl;
 	port->clean();
 	return port->write(buf, command.size());
 }
@@ -36,4 +39,32 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	response = Response(message);
 	
 	return response.isOk();
+}
+
+bool MCSProtocol::ack(serial::SerialPort* port, const Command& command, Response& response, unsigned tries) {
+	unsigned count = 0;
+	
+	while (!receive(port, response)) {
+		usleep(1000);
+		
+		count++;
+		if (count > tries) {
+			return false;
+		}
+	}
+	
+	//cout << response << endl;
+	
+	if (command.getCommand() == response.getCommand()) {
+		return true;
+	}
+	
+	return false;
+}
+
+bool MCSProtocol::emit(serial::SerialPort* port, const Command& command, unsigned tries) {
+	send(port, command);
+
+	Response response;
+	return MCSProtocol::ack(port, command, response, tries);
 }

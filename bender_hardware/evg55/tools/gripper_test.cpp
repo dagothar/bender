@@ -23,48 +23,52 @@ int main() {
 	if (!gripper.isOk()) gripper.clearError();
 	
 	/* TEST CODE */
-	// test referencing
-	gripper.home();
-	
-	while (gripper.isOk() && !gripper.isReferenced()) {
-		cout << "Referencing..." << endl;
-		usleep(100);
+	// check for error and clear if any
+	if (!gripper.isOk()) {
+		cout << "Gripper error, trying to clear..." << endl;
+		
+		gripper.clearError();
+		
+		if (!gripper.isOk()) {
+			cout << "Error occured" << endl;
+		
+			port->close();
+			delete port;
+			
+			return -1;
+		}
 	}
 	
-	if (gripper.getErrorCode() == 0) {
-		cout << "Referencing succesful" << endl;
+	// test referencing
+	do {
+		cout << "Referencing..." << endl;
+		
+		gripper.home();
+		sleep(1);
+		
+	} while (gripper.isOk() && !gripper.isReferenced());
+	
+	if (!gripper.isOk(false)) {
+		cout << "Error occured" << endl;
+		
+		port->close();
+		delete port;
+		
+		return -1;
 	}
 	
 	// test move to position
-	bool success = gripper.moveWait(10.0);
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	gripper.move(10.0);
+	cout << gripper.getPosition(true) << endl;
 	
-	success = gripper.moveWait(15.0);
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	gripper.move(20.0);
+	cout << gripper.getPosition(true) << endl;
 	
-	success = gripper.moveWait(5.0);
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
-	
-	success = gripper.moveWait(75.0);
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
-	
-	success = gripper.moveWait(15.0);
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
-	
+	sleep(1);
 	gripper.close();
-	sleep(2);
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	sleep(1);
 	
-	cout << +gripper.getErrorCode() << endl;
-	//gripper.clearError();
-	gripper.poll();
-	cout << "Status: " << gripper.getStatus() << " Position: " << gripper.getPosition() << " success?: " << success << endl;
+	cout << hex << +gripper.getErrorCode(true) << endl;
 	
 	/* /TEST CODE */
 	

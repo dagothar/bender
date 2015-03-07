@@ -28,6 +28,26 @@ public:
 	 * @return \b true if succesful.
 	 */
 	static bool receive(serial::SerialPort* port, Response& response);
+	
+	/**
+	 * @brief Wait for a command acknowledgement.
+	 * Command acknowledgement contains command code.
+	 * @param port [in] serial port to use
+	 * @param command [in] a command for which to wait for acknowledgement
+	 * @param response [out] a received response
+	 * @param tries [in] number of tries
+	 * @return \b true if succesful.
+	 */ 
+	static bool ack(serial::SerialPort* port, const Command& command, Response& response, unsigned tries=10);
+	
+	/**
+	 * @brief Send a command and wait for acknowledgement.
+	 * @param port [in] serial port to use
+	 * @param command [in] a packet to send
+	 * @param tries [in] number of tries
+	 * @return \b true if succesful.
+	 */
+	static bool emit(serial::SerialPort* port, const Command& command, unsigned tries=10);
 };
 
 }

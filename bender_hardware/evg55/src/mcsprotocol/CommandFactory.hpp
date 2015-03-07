@@ -29,6 +29,20 @@ public:
 	static Command makeGetStateCommand(Byte id, float interval=0.0);
 	
 	/**
+	 * @brief Creates a SetTargetVelocity command.
+	 * @param id [in] module id
+	 * @param vel [in] velocity limit (in mm/s)
+	 */
+	static Command makeSetTargetVelocityCommand(Byte id, float vel);
+	
+	/**
+	 * @brief Creates a SetTargetVelocity command.
+	 * @param id [in] module id
+	 * @param cur [in] current limit (in A)
+	 */
+	static Command makeSetTargetCurrentCommand(Byte id, float cur);
+	
+	/**
 	 * @brief Creates a MovePosition command.
 	 * @param id [in] module id
 	 * @param pos [in] gripper opening (in mm)

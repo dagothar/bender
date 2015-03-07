@@ -27,10 +27,19 @@ public:
 	};
 	
 	//! Timeout for move commands
-	static const int MoveTimeout = 100; // 10? s
+	static const float MoveTimeout = 10.0; // s
+	
+	//! Max gripper opening
+	static const float MaxOpening = 100.0; // mm
+	
+	//! Max gripper velocity
+	static const float MaxVelocity = 25.0; // mm/s
 	
 	//! Max gripping current
-	static const float MaxCurrent = 1.0;
+	static const float MaxCurrent = 5.0; // A
+	
+	//! Allowed error for positioning
+	static const float EpsPosition = 1.0; // mm
 	
 public:
 	/* CONSTRUCTORS */
@@ -63,7 +72,7 @@ public:
 	 * @brief Sends error acknowledgement command.
 	 * Attempts to clear error state of the module.
 	 */
-	void clearError();
+	bool clearError();
 	
 	/* GET INFO */
 	/**
@@ -75,7 +84,7 @@ public:
 	 * @brief Returns gripper state bytes.
 	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
-	unsigned short getStatus(bool doPoll = false);
+	unsigned short getStatus(bool doPoll = true);
 	
 	/**
 	 * @brief Returns \b true if gripper is connected.
@@ -94,12 +103,6 @@ public:
 	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
 	 */
 	bool isReferenced(bool doPoll = false);
-	
-	/**
-	 * @brief Returns \b true if gripper is moving.
-	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
-	 */
-	bool isMoving(bool doPoll = false);
 	
 	/**
 	 * @brief Returns gripper's position.
@@ -125,34 +128,30 @@ public:
 	
 	/* COMMAND API */
 	/**
-	 * @brief Sends reference gripper command.
-	 * Attempts to reference the gripper.
+	 * @brief Attempts to reference the gripper.
+	 * @return \b true if succesful
 	 */
-	void home();
+	bool home();
 	
 	/**
-	 * @brief Sends move gripper to position command.
+	 * @brief Set gripper opening.
+	 * Waits till move completed.
 	 * @param pos [in] position in mm
+	 * @return \b true if move succesful
 	 */
-	void move(float pos);
-	
+	bool move(float pos);
 	/**
-	 * @brief Send move to position command, and wait till move complete.
-	 * @param pos [in] position in mm
-	 * @return \b true if position reached succesfully
+	 * @brief Opens gripper.
 	 */
-	bool moveWait(float pos);
+	bool open();
 	
 	/**
 	 * @brief Closes gripper.
 	 * Waits till move completed.
 	 */
-	void close();
+	bool close();
 	
 private:
-	//! A function listening to gripper status.
-	void listenerFunc();
-	
 	serial::SerialPort* _port;
 	unsigned char _id;
 	

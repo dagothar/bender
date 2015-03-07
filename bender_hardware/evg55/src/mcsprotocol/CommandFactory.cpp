@@ -22,6 +22,22 @@ Command CommandFactory::makeGetStateCommand(Byte id, float interval) {
 	return cmd;
 }
 
+Command CommandFactory::makeSetTargetVelocityCommand(Byte id, float vel) {
+	Command cmd(id, Command::SetTargetVelocity);
+	
+	cmd.addParameter(vel);
+
+	return cmd;
+}
+
+Command CommandFactory::makeSetTargetCurrentCommand(Byte id, float cur) {
+	Command cmd(id, Command::SetTargetCurrent);
+	
+	cmd.addParameter(cur);
+
+	return cmd;
+}
+
 Command CommandFactory::makeMovePositionCommand(Byte id, float pos) {
 	Command cmd(id, Command::MovePosition);
 	

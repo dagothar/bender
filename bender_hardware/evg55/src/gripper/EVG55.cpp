@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <ctime>
 #include <boost/bind.hpp>
 
 #include <mcsprotocol/CommandFactory.hpp>
@@ -20,7 +21,8 @@ EVG55::EVG55() :
 	_connected(false),
 	_ok(true),
 	_referenced(false),
-	_status(0)
+	_status(0),
+	_errorCode(0)
 {
 }
 
@@ -45,9 +47,25 @@ void EVG55::disconnect() {
 	_connected = false;
 }
 
-void EVG55::clearError() {
-	Command ackCmd = CommandFactory::makeAcknowledgementCommand(_id);
-	MCSProtocol::send(_port, ackCmd);
+bool EVG55::clearError() {
+	if (!MCSProtocol::emit(_port, CommandFactory::makeAcknowledgementCommand(_id))) {
+		cout << "Failed to send ClearError command" << endl;
+		return false;
+	}
+	
+	clock_t t0 = clock();
+	do {
+		usleep(10000);
+		
+		if (isOk()) {
+			return true;
+		}
+
+	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
+	
+	cout << "Clear error failed" << endl;
+	
+	return false;
 }
 
 bool EVG55::poll() {
@@ -63,7 +81,7 @@ bool EVG55::poll() {
 	// wait for proper response
 	int missedCount = 0;
 	while (missedCount <= maxMissedCount) {
-		usleep(100);
+		usleep(10000);
 		
 		if (MCSProtocol::receive(_port, response) && response.isState()) {
 			break;
@@ -86,8 +104,8 @@ bool EVG55::poll() {
 	
 	// decode status
 	_referenced = _status & StatusReferenced;
-	_ok = !(_status & StatusError);
 	_errorCode = (_status & 0xff00) >> 8;
+	_ok = !(_status & StatusError) && _errorCode == 0;
 
 	_connected = true;
 	return true;
@@ -125,14 +143,6 @@ bool EVG55::isReferenced(bool doPoll) {
 	return _referenced;
 }
 
-bool EVG55::isMoving(bool doPoll) {
-	if (doPoll) {
-		poll();
-	}
-	
-	return _status & StatusMoving;
-}
-
 float EVG55::getPosition(bool doPoll) {
 	if (doPoll) {
 		poll();
@@ -149,50 +159,99 @@ unsigned char EVG55::getErrorCode(bool doPoll) {
 	return _errorCode;
 }
 
-void EVG55::home() {
-	Command refCmd = CommandFactory::makeReferenceCommand(_id);
-	MCSProtocol::send(_port, refCmd);
-}
-
-void EVG55::move(float pos) {
-	int count = 0;
-	
-	while (count++ < MoveTimeout) {
-		Command moveCmd = CommandFactory::makeMovePositionCommand(_id, pos);
-		MCSProtocol::send(_port, moveCmd);
-		
-		Response response;
-		if (MCSProtocol::receive(_port, response) && response.getCommand() == Command::MovePosition) break;
-		
-		usleep(100);
+bool EVG55::home() {
+	if (!MCSProtocol::emit(_port, CommandFactory::makeReferenceCommand(_id))) {
+		cout << "Failed to send Reference command" << endl;
+		return false;
 	}
 	
-	//cout << "Response: " << response << endl;
-}
-
-bool EVG55::moveWait(float pos) {
-	move(pos);
-	
-	// wait till in position
-	// TODO: add timeout && error checking
-	int time = 0;
-	while (isOk() && fabs(getPosition() - pos) > 1.0 && time++ < MoveTimeout) {
-		usleep(100000);
+	clock_t t0 = clock();
+	do {
+		usleep(10000);
 		
-		if (_status & StatusMoveEnd) break;
-	}
+		if (!isOk()) {
+			break;
+		}
+		
+		if (_status & StatusReferenced) {
+			return true;
+		}
+	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
 	
-	poll();
-	
-	// check if at destination
-	if (isOk() && fabs(getPosition() - pos) < 1.0) {
-		return true;
-	}
+	cout << "Referencing failed" << endl;
 	
 	return false;
 }
 
-void EVG55::close() {
-	Command closeCmd = CommandFactory::makeMoveGripCommand(_id, -MaxCurrent);
-	MCSProtocol::send(_port, closeCmd);
+bool EVG55::move(float pos) {
+	if (pos < 0.0 || pos > MaxOpening) {
+		cout << "Position " << pos << " is out of range" << endl;
+	}
+	
+	if (!MCSProtocol::emit(_port, CommandFactory::makeSetTargetVelocityCommand(_id, MaxVelocity))
+		|| !MCSProtocol::emit(_port, CommandFactory::makeSetTargetCurrentCommand(_id, MaxCurrent))) {
+		
+		cout << "Failed to set gripper target velocity or current" << endl;
+		return false;
+	}
+	
+	if (!MCSProtocol::emit(_port, CommandFactory::makeMovePositionCommand(_id, pos))) {
+		cout << "Failed to send MovePosition command" << endl;
+		return false;
+	}
+	
+	// wait till movements complete
+	clock_t t0 = clock();
+	do {
+		usleep(10000);
+		
+		if (!isOk()) {
+			break;
+		}
+		
+		if (_status & StatusPositionReached || fabs(getPosition() - pos) < EpsPosition) {
+			return true;
+		}
+	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
+	
+	cout << "Move failed" << endl;
+	
+	return false;
+}
+
+bool EVG55::close() {
+	if (!MCSProtocol::emit(_port, CommandFactory::makeMoveGripCommand(_id, -MaxCurrent))) {
+		cout << "Failed to send MoveGrip command" << endl;
+		return false;
+	}
+	
+	// wait till movements complete
+	clock_t t0 = clock();
+	do {
+		usleep(10000);
+		
+		poll();
+		
+		cout << "Status" << +_status << endl;
+		
+		// check if it's the soft limit
+		if (_errorCode == 0xd5) {
+			cout << "Soft limit reached, clearing error byte" << endl;
+			clearError();
+			continue;
+		}
+		
+		if (!isOk(false)) {
+			
+			break;
+		}
+		
+		if (!(_status & StatusMoving)) {
+			return true;
+		}
+	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
+	
+	cout << "Close failed" << endl;
+	
+	return false;
 }

@@ -23,7 +23,9 @@ public:
 		GetState = 0x95,
 		Reboot = 0xe0,
 		Acknowledge = 0x8b,
-		Error = 0x03
+		Error = 0x03,
+		SetTargetVelocity = 0xa0,
+		SetTargetCurrent = 0xa3
 	};
 public:
 	/**
