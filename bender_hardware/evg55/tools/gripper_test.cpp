@@ -24,7 +24,7 @@ int main() {
 	
 	/* TEST CODE */
 	// check for error and clear if any
-	/*if (!gripper.isOk(true)) {
+	if (!gripper.isOk(true)) {
 		cout << "Gripper error " << +gripper.getErrorCode() << " - trying to clear..." << endl;
 		
 		if (!gripper.clearError()) {
@@ -35,7 +35,7 @@ int main() {
 			
 			return -1;
 		}
-	}*/
+	}
 	
 	// test referencing
 	cout << "Referencing: " << endl;

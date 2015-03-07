@@ -31,7 +31,8 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	
 	// read incoming message
 	port->read(buf, BUF_LEN, 300);
-	//port->clean();
+	
+	if (buf[0] == 0) return false;
 	
 	// copy message to response
 	size_t msgLength = 5 + static_cast<unsigned char>(buf[2]);
@@ -65,7 +66,7 @@ bool MCSProtocol::ack(serial::SerialPort* port, const Command& command, Response
 		
 		//cout << response << endl;
 		
-		if (command.getCommand() == response.getCommand()) {
+		if (command.getCommand() == response.getCommand() && response.getDlen() != 2) {
 			
 #ifdef LOG
 			cout << "}" << endl;

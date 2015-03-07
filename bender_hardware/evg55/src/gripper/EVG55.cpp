@@ -149,7 +149,7 @@ unsigned char EVG55::getErrorCode(bool doPoll) {
 
 bool EVG55::home() {
 	if (!MCSProtocol::emit(_port, CommandFactory::makeReferenceCommand(_id))) {
-		cout << "Failed to send Reference command" << endl;
+		cout << "Referencing failed" << endl;
 		return false;
 	}
 	
@@ -193,7 +193,7 @@ bool EVG55::move(float pos) {
 	// wait till movements complete
 	clock_t t0 = clock();
 	do {
-		usleep(10000);
+		//usleep(10000);
 		
 		poll();
 		
@@ -202,8 +202,10 @@ bool EVG55::move(float pos) {
 		}
 		
 		if (_status & StatusPositionReached || fabs(getPosition() - pos) < EpsPosition) {
-			return true;
+			//return true;
 		}
+		
+		cout << clock() - t0 << " " << CLOCKS_PER_SEC << endl;
 	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
 	
 	cout << "Move failed" << endl;
@@ -240,9 +242,9 @@ bool EVG55::close() {
 			break;
 		}
 		
-		if (!(_status & StatusMoving)) {
-			return true;
-		}
+		//if (!(_status & StatusMoving)) {
+		//	return true;
+		//}
 	} while (1.0 * (clock() - t0) / CLOCKS_PER_SEC < MoveTimeout);
 	
 	cout << "Close failed" << endl;
