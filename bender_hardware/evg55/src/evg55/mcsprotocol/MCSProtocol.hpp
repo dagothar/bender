@@ -1,7 +1,7 @@
 #ifndef _MCSPROTOCOL_MCSPROTOCOL_HPP
 #define _MCSPROTOCOL_MCSPROTOCOL_HPP
 
-#include <serial/SerialPort.hpp>
+#include <evg55/serial/SerialPort.hpp>
 #include "Command.hpp"
 #include "Response.hpp"
 

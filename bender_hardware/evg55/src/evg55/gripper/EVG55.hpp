@@ -1,7 +1,7 @@
 #ifndef _EVG55_HPP
 #define _EVG55_HPP
 
-#include <serial/SerialPort.hpp>
+#include <evg55/serial/SerialPort.hpp>
 
 namespace evg55 {
 namespace gripper {

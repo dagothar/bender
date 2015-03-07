@@ -3,7 +3,7 @@
 #include <iomanip>
 
 #include "DataConversion.hpp"
-#include <crc/SchunkCRC16.hpp>
+#include <evg55/crc/SchunkCRC16.hpp>
 
 using namespace std;
 using namespace evg55::mcsprotocol;

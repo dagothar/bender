@@ -57,6 +57,8 @@ add_service_files(
   FILES
   Home.srv
   MovePosition.srv
+  Open.srv
+  Close.srv
 )
 
 ## Generate actions in the 'action' folder

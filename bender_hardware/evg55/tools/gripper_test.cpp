@@ -2,9 +2,9 @@
 #include <iomanip>
 #include <sstream>
 #include <unistd.h>
-#include <serial/RWHWSerialPort.hpp>
-#include <gripper/EVG55.hpp>
-#include <mcsprotocol/MCSProtocol.hpp>
+#include <evg55/serial/RWHWSerialPort.hpp>
+#include <evg55/gripper/EVG55.hpp>
+#include <evg55/mcsprotocol/MCSProtocol.hpp>
 
 using namespace std;
 using namespace evg55::serial;

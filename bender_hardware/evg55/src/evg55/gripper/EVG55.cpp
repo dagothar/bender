@@ -5,9 +5,9 @@
 #include <ctime>
 #include <boost/bind.hpp>
 
-#include <mcsprotocol/CommandFactory.hpp>
-#include <mcsprotocol/MCSProtocol.hpp>
-#include <mcsprotocol/DataConversion.hpp>
+#include <evg55/mcsprotocol/CommandFactory.hpp>
+#include <evg55/mcsprotocol/MCSProtocol.hpp>
+#include <evg55/mcsprotocol/DataConversion.hpp>
 #include "GripperException.hpp"
 
 using namespace std;
