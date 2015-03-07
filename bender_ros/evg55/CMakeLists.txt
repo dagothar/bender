@@ -100,11 +100,13 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${ROBWORK_INCLUDE_DIRS}
   $ENV{RWHW_ROOT}/src
+  $ENV{BENDER_ROOT}/bender_hardware/evg55/src
 )
 
 link_directories(
   ${ROBWORK_LIBRARY_DIRS}
   $ENV{RWHW_ROOT}/libs/Release
+  $ENV{BENDER_ROOT}/bender_hardware/evg55/libs
 )
 
 ## Declare a cpp library
@@ -122,6 +124,8 @@ add_dependencies(evg55_node evg55_generate_messages_cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(evg55_node
   ${catkin_LIBRARIES}
+  evg55
+  rwhw_serialport
   ${ROBWORK_LIBRARIES}
 )
 

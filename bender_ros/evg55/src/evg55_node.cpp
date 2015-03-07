@@ -8,7 +8,17 @@
 #include "evg55/Close.h"
 #include "evg55/MovePosition.h"
 
+#include <evg55/gripper/EVG55.hpp>
+#include <evg55/serial/RWHWSerialPort.hpp>
+
 using namespace std;
+using namespace evg55::gripper;
+using namespace evg55::serial;
+
+
+
+/* GRIPPER */
+EVG55 gripper;
 
 
 
@@ -71,8 +81,8 @@ int main(int argc, char* argv[]) {
 	ros::NodeHandle n("~");
 	
 	// load parameters from the parameter server
-	string port;
-	if (!n.getParam("port", port)) {
+	string portName;
+	if (!n.getParam("port", portName)) {
 		ROS_ERROR("Parameter 'port' not found.");
 		return -1;
 	}
@@ -90,7 +100,9 @@ int main(int argc, char* argv[]) {
 	}
 	
 	// connect to and initialize the gripper
-	// TODO: implement
+	SerialPort* port = new RWHWSerialPort();
+	port->open(portName, baudrate);
+	gripper.connect(port, moduleid);
 	
 	// advertise services
 	ros::ServiceServer homeSrv = n.advertiseService("home", homeService);
@@ -105,7 +117,9 @@ int main(int argc, char* argv[]) {
 
 	// publish state topic
 	ros::Rate loop_rate(100);
-	while (ros::ok()) {		
+	while (ros::ok()) {
+		gripper.poll();
+		
 		// create message
 		evg55::State msg;
 		
