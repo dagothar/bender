@@ -42,12 +42,14 @@ public:
 	
 	/**
 	 * @brief Send a command and wait for acknowledgement.
+	 * Essentially combines send & acknowledge.
 	 * @param port [in] serial port to use
 	 * @param command [in] a packet to send
+	 * @param response [out] a received response
 	 * @param tries [in] number of tries
 	 * @return \b true if succesful.
 	 */
-	static bool emit(serial::SerialPort* port, const Command& command, unsigned tries=10);
+	static bool emit(serial::SerialPort* port, const Command& command, Response& response, unsigned tries=10);
 };
 
 }

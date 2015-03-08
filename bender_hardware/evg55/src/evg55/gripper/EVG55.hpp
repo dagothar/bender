@@ -77,6 +77,7 @@ public:
 	/* GET INFO */
 	/**
 	 * @brief Polls gripper module for new information.
+	 * Calls GetState.
 	 */
 	bool poll();
 	
@@ -84,45 +85,41 @@ public:
 	 * @brief Returns gripper state bytes.
 	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
-	unsigned short getStatus(bool doPoll = true);
-	
-	/**
-	 * @brief Returns \b true if gripper is connected.
-	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
-	 */
-	bool isConnected(bool doPoll = true);
+	unsigned short getStatus(bool doPoll = false);
 	
 	/**
 	 * @brief Returns \b true if gripper is in OK state, and \b false if there is any kind of error.
-	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information.
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information.
 	 */
 	bool isOk(bool doPoll = false);
 	
 	/**
 	 * @brief Returns \b true if gripper is referenced.
-	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
 	bool isReferenced(bool doPoll = false);
 	
 	/**
 	 * @brief Returns gripper's position.
-	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
 	float getPosition(bool doPoll = false);
 	
 	/**
 	 * @brief Returns gripper's velocity.
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
-	float getVelocity() const;
+	float getVelocity(bool doPoll = false) const;
 	
 	/**
 	 * @brief Returns gripper's current.
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
-	float getCurrent() const;
+	float getCurrent(bool doPoll = false) const;
 	
 	/**
 	 * @brief Returns gripper error code.
-	 * @param doPoll [in] if \b true getState() is called, otherwise uses stored information
+	 * @param doPoll [in] if \b true poll() is called, otherwise uses stored information
 	 */
 	unsigned char getErrorCode(bool doPoll = false);
 	
@@ -152,12 +149,16 @@ public:
 	bool close();
 	
 private:
+	// connection information
 	serial::SerialPort* _port;
 	unsigned char _id;
 	
-	bool _connected;
+	// flags
+	bool _connected; // if connection has already been done
 	bool _ok;
 	bool _referenced;
+	
+	// gripper state
 	float _position;
 	float _velocity;
 	float _current;

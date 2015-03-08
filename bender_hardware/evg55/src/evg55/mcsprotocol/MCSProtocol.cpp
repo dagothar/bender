@@ -24,18 +24,25 @@ bool MCSProtocol::send(SerialPort* port, const Command& command) {
 }
 
 bool MCSProtocol::receive(SerialPort* port, Response& response) {
-	// create and clean a buffer for incoming data
+	/*create and clean a buffer for incoming data */
 	const int BUF_LEN = 256;
 	char buf[BUF_LEN];
 	for (int i = 0; i < BUF_LEN; buf[i++] = 0);
 	
-	// read incoming message
-	port->read(buf, BUF_LEN, 300);
+	/* read header of the incoming message */
+	port->read(buf, 3, 200);
 	
-	if (buf[0] == 0) return false;
+	/* check if message has a proper header */
+	if (buf[0] != 0x07) return false;
 	
-	// copy message to response
-	size_t msgLength = 5 + static_cast<unsigned char>(buf[2]);
+	/* check out dlen to see how many bytes more to read */
+	size_t dlen = buf[2];
+	
+	/* read incoming message */
+	port->read(buf+3, dlen+2, 300);
+	
+	/* copy message to response */
+	size_t msgLength = 5 + dlen;
 	ByteVector message;
 	for (size_t i = 0; i < msgLength && i < BUF_LEN; ++i) {
 		message.push_back(buf[i]);
@@ -54,7 +61,7 @@ bool MCSProtocol::ack(serial::SerialPort* port, const Command& command, Response
 	unsigned count = 0;
 
 #ifdef LOG
-	cout << "ACK {" << endl;
+	//cout << "ACK {" << endl;
 #endif
 	do {
 		usleep(100);
@@ -66,7 +73,7 @@ bool MCSProtocol::ack(serial::SerialPort* port, const Command& command, Response
 		
 		//cout << response << endl;
 		
-		if (command.getCommand() == response.getCommand() && response.getDlen() != 2) {
+		if (command.getCommand() == response.getCommand() && response.getDlen() != 2) { // check if the command matches, and is not an error message
 			
 #ifdef LOG
 			cout << "}" << endl;
@@ -77,15 +84,14 @@ bool MCSProtocol::ack(serial::SerialPort* port, const Command& command, Response
 	} while(count < tries);
 	
 #ifdef LOG
-	cout << "}" << endl;
+	//cout << "}" << endl;
 #endif
 	
 	return false;
 }
 
-bool MCSProtocol::emit(serial::SerialPort* port, const Command& command, unsigned tries) {
+bool MCSProtocol::emit(serial::SerialPort* port, const Command& command, Response& response, unsigned tries) {
 	send(port, command);
 
-	Response response;
 	return MCSProtocol::ack(port, command, response, tries);
 }

@@ -55,6 +55,8 @@ int main() {
 	gripper.move(10.0);
 	cout << gripper.getPosition(true) << endl;
 	
+	sleep(1);
+	
 	gripper.move(20.0);
 	cout << gripper.getPosition(true) << endl;
 	
@@ -62,7 +64,7 @@ int main() {
 	
 	// test closing
 	cout << "Closing: " << endl;
-	//gripper.close();
+	gripper.close();
 	
 	cout << hex << +gripper.getErrorCode(true) << endl;
 	

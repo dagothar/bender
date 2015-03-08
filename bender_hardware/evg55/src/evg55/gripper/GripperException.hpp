@@ -2,6 +2,7 @@
 #define _GRIPPEREXCEPTION_HPP
 
 #include <stdexcept>
+#include <string>
 #include <sstream>
 
 namespace evg55 {
@@ -15,21 +16,35 @@ public:
 	//! Constructor.
 	GripperException() : std::runtime_error("") {}
 	
+	//! Destructor.
+	virtual ~GripperException() throw() {}
+	
 	virtual const char* what() throw() {
-		return "Gripper exception!";
+		return "Gripper exception";
 	}
 };
 
 
 
 /**
- * Gripper is not connected exception.
+ * Thrown when failed to acknowledge a command
  */
-class GripperNotConnected: public GripperException {
+class GripperAckException: public GripperException {
 public:
+	//! Constructor
+	GripperAckException(const std::string& command) :
+		_command(command)
+	{}
+	
+	//! Destructor.
+	virtual ~GripperAckException() throw() {}
+	
 	virtual const char* what() throw() {
-		return "Gripper is not connected!";
+		return "lol"; //("Failed to acknowledge command: " + _command).c_str();
 	}
+	
+protected:
+	const std::string _command;
 };
 
 
@@ -40,7 +55,7 @@ public:
 class GripperNotReferenced: public GripperException {
 public:
 	virtual const char* what() throw() {
-		return "Gripper is not referenced!";
+		return "Gripper is not referenced";
 	}
 };
 
