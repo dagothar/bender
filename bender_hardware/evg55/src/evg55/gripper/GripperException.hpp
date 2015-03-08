@@ -33,18 +33,18 @@ class GripperAckException: public GripperException {
 public:
 	//! Constructor
 	GripperAckException(const std::string& command) :
-		_command(command)
+		_msg("lol")
 	{}
 	
 	//! Destructor.
 	virtual ~GripperAckException() throw() {}
 	
 	virtual const char* what() throw() {
-		return "lol"; //("Failed to acknowledge command: " + _command).c_str();
+		return _msg.c_str();
 	}
 	
 protected:
-	const std::string _command;
+	std::string _msg;
 };
 
 

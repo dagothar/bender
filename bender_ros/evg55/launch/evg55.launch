@@ -10,6 +10,9 @@
 		<!-- module parameters -->
 		<param name="moduleid" value="12"/>
 		
+		<!-- topic refresh ratio (per second) -->
+		<param name="rate" value="10"/>
+		
 	</node>
 	
 </launch>

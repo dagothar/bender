@@ -2,6 +2,7 @@
 #define _EVG55_HPP
 
 #include <evg55/serial/SerialPort.hpp>
+#include "GripperException.hpp"
 
 namespace evg55 {
 namespace gripper {
@@ -30,7 +31,7 @@ public:
 	static const float MoveTimeout = 10.0; // s
 	
 	//! Max gripper opening
-	static const float MaxOpening = 100.0; // mm
+	static const float MaxOpening = 50.0; // mm
 	
 	//! Max gripper velocity
 	static const float MaxVelocity = 25.0; // mm/s

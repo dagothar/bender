@@ -30,7 +30,7 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	for (int i = 0; i < BUF_LEN; buf[i++] = 0);
 	
 	/* read header of the incoming message */
-	port->read(buf, 3, 200);
+	port->read(buf, 3, 250);
 	
 	/* check if message has a proper header */
 	if (buf[0] != 0x07) return false;
@@ -39,7 +39,7 @@ bool MCSProtocol::receive(SerialPort* port, Response& response) {
 	size_t dlen = buf[2];
 	
 	/* read incoming message */
-	port->read(buf+3, dlen+2, 300);
+	port->read(buf+3, dlen+2, 250);
 	
 	/* copy message to response */
 	size_t msgLength = 5 + dlen;

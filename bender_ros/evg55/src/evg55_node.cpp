@@ -28,7 +28,18 @@ EVG55 gripper;
 bool homeService(evg55::Home::Request& request, evg55::Home::Response& response) {
 	ROS_INFO("Service Home called.");
 	
-	// TODO: implement
+	/* try executing command */
+	try {
+		gripper.home();
+	} catch (GripperException& e) {
+		ROS_ERROR (e.what());
+	}
+	
+	/* get gripper state */
+	response.state.header.stamp = ros::Time::now();
+	response.state.position = gripper.getPosition();
+	response.state.status = gripper.getStatus();
+	response.state.error = gripper.getErrorCode();
 	
 	return true;
 }
@@ -41,7 +52,18 @@ bool homeService(evg55::Home::Request& request, evg55::Home::Response& response)
 bool movePositionService(evg55::MovePosition::Request& request, evg55::MovePosition::Response& response) {
 	ROS_INFO("Service MovePosition called.");
 	
-	// TODO: implement
+	/* try executing command */
+	try {
+		gripper.move(request.position);
+	} catch (GripperException& e) {
+		ROS_ERROR (e.what());
+	}
+	
+	/* get gripper state */
+	response.state.header.stamp = ros::Time::now();
+	response.state.position = gripper.getPosition();
+	response.state.status = gripper.getStatus();
+	response.state.error = gripper.getErrorCode();
 	
 	return true;
 }
@@ -99,6 +121,12 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	
+	int rate;
+	if (!n.getParam("rate", rate)) {
+		ROS_ERROR("Parameter 'rate' not found.");
+		return -1;
+	}
+	
 	// connect to and initialize the gripper
 	SerialPort* port = new RWHWSerialPort();
 	port->open(portName, baudrate);
@@ -115,17 +143,22 @@ int main(int argc, char* argv[]) {
 	
 	ROS_INFO("EVG55 node ready.");
 
-	// publish state topic
-	ros::Rate loop_rate(100);
+	/* publish state topic */
+	ros::Rate loop_rate(rate);
 	while (ros::ok()) {
 		gripper.poll();
 		
-		// create message
+		/* create message and publish */
 		evg55::State msg;
 		
-		// publish
+		msg.header.stamp = ros::Time::now();
+		msg.position = gripper.getPosition();
+		msg.status = gripper.getStatus();
+		msg.error = gripper.getErrorCode();
+		
 		statePub.publish(msg);
 		
+		/* sleep */
 		ros::spinOnce();
 		loop_rate.sleep();
 	}

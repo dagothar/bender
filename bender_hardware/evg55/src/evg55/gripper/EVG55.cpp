@@ -9,7 +9,6 @@
 #include <evg55/mcsprotocol/CommandFactory.hpp>
 #include <evg55/mcsprotocol/MCSProtocol.hpp>
 #include <evg55/mcsprotocol/DataConversion.hpp>
-#include "GripperException.hpp"
 
 using namespace std;
 using namespace evg55::serial;
@@ -241,13 +240,23 @@ bool EVG55::close() {
 		
 		cout << "Status: " << _status << endl;
 		
-		/* break if error occured */
+		/* check for errors */
 		if (!isOk()) {
+			/* If gripper is empty, closing ends with module hitting limits.
+			 * An error is generated that has to be cleared.
+			 */
+			if (_errorCode == 0xd5) {
+				cout << "Soft limit, attempting to clear error..." << endl;
+				
+				clearError();
+				continue;
+			}
+			
 			cout << "Close error" << endl;
 			break;
 		}
 		
-		if (_status & StatusMoveEnd) {
+		if (_status & StatusBrake) {
 			closed = true;
 		}
 	};
