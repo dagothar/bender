@@ -31,10 +31,10 @@ public:
 	static const float MoveTimeout = 10.0; // s
 	
 	//! Max gripper opening
-	static const float MaxOpening = 50.0; // mm
+	static const float MaxOpening = 75.0; // mm
 	
 	//! Max gripper velocity
-	static const float MaxVelocity = 50.0; // mm/s
+	static const float MaxVelocity = 100.0; // mm/s
 	
 	//! Max gripping current
 	static const float MaxCurrent = 5.0; // A
