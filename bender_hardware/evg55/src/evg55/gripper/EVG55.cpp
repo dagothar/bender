@@ -134,7 +134,9 @@ unsigned char EVG55::getErrorCode(bool doPoll) {
 bool EVG55::home() {
 	Response response;
 	if (!MCSProtocol::emit(_port, CommandFactory::makeReferenceCommand(_id), response)) {
-		throw GripperAckException("Reference");
+		//throw GripperAckException("Reference");
+		cout << "Failed to acknowledge Reference command" << endl;
+		return false;
 	}
 	
 	/* wait till movements complete */
@@ -187,6 +189,15 @@ bool EVG55::move(float pos) {
 		return false;
 	}
 	
+	return true;
+}
+
+bool EVG55::moveWait(float pos) {
+	/* call move */
+	if (!move(pos)) {
+		return false;
+	}
+	
 	/* wait till movements complete */
 	ptime t0 = microsec_clock::local_time(); // start time
 	ptime tend = t0 + seconds(MoveTimeout); // end time
@@ -216,12 +227,69 @@ bool EVG55::move(float pos) {
 	return reached;
 }
 
-bool EVG55::close() {
-	Response response;
+bool EVG55::open() {
+	/* send Open command */
+	/*Response response;
 	if (!MCSProtocol::emit(_port, CommandFactory::makeMoveGripCommand(_id, -MaxCurrent), response)) {
 		cout << "Failed to send MoveGrip command" << endl;
 		return false;
-	}
+	}*/
+	move(MaxOpening);
+	
+	return true;
+}
+
+bool EVG55::openWait() {
+	/* call open */
+	open();
+	
+	/* wait till movements complete */
+	ptime t0 = microsec_clock::local_time(); // start time
+	ptime tend = t0 + seconds(MoveTimeout); // end time
+	bool closed = false;
+	
+	while (!closed) {
+		/* check for timeout */
+		if (microsec_clock::local_time() > tend) {
+			cout << "Open timeout" << endl;
+			break;
+		}
+		 
+		usleep(10000);
+		poll();
+		
+		cout << "Status: " << _status << endl;
+		
+		/* check for errors */
+		if (!isOk()) {			
+			cout << "Open error" << endl;
+			break;
+		}
+		
+		if (_status & StatusBrake) {
+			closed = true;
+		}
+	};
+	
+	return closed;
+}
+
+
+bool EVG55::close() {
+	/* send Close command */
+	/*Response response;
+	if (!MCSProtocol::emit(_port, CommandFactory::makeMoveGripCommand(_id, -MaxCurrent), response)) {
+		cout << "Failed to send MoveGrip command" << endl;
+		return false;
+	}*/
+	move(0.0);
+	
+	return true;
+}
+
+bool EVG55::closeWait() {
+	/* call close */
+	close();
 	
 	/* wait till movements complete */
 	ptime t0 = microsec_clock::local_time(); // start time
@@ -242,16 +310,6 @@ bool EVG55::close() {
 		
 		/* check for errors */
 		if (!isOk()) {
-			/* If gripper is empty, closing ends with module hitting limits.
-			 * An error is generated that has to be cleared.
-			 */
-			if (_errorCode == 0xd5) {
-				cout << "Soft limit, attempting to clear error..." << endl;
-				
-				clearError();
-				continue;
-			}
-			
 			cout << "Close error" << endl;
 			break;
 		}

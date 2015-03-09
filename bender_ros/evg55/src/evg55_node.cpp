@@ -7,6 +7,7 @@
 #include "evg55/Open.h"
 #include "evg55/Close.h"
 #include "evg55/MovePosition.h"
+#include "evg55/ClearError.h"
 
 #include <evg55/gripper/EVG55.hpp>
 #include <evg55/serial/RWHWSerialPort.hpp>
@@ -76,7 +77,18 @@ bool movePositionService(evg55::MovePosition::Request& request, evg55::MovePosit
 bool openService(evg55::Open::Request& request, evg55::Open::Response& response) {
 	ROS_INFO("Service Open called.");
 	
-	// TODO: implement
+	/* try executing command */
+	try {
+		gripper.open();
+	} catch (GripperException& e) {
+		ROS_ERROR (e.what());
+	}
+	
+	/* get gripper state */
+	response.state.header.stamp = ros::Time::now();
+	response.state.position = gripper.getPosition();
+	response.state.status = gripper.getStatus();
+	response.state.error = gripper.getErrorCode();
 	
 	return true;
 }
@@ -89,7 +101,42 @@ bool openService(evg55::Open::Request& request, evg55::Open::Response& response)
 bool closeService(evg55::Close::Request& request, evg55::Close::Response& response) {
 	ROS_INFO("Service Close called.");
 	
-	// TODO: implement
+	/* try executing command */
+	try {
+		gripper.close();
+	} catch (GripperException& e) {
+		ROS_ERROR (e.what());
+	}
+	
+	/* get gripper state */
+	response.state.header.stamp = ros::Time::now();
+	response.state.position = gripper.getPosition();
+	response.state.status = gripper.getStatus();
+	response.state.error = gripper.getErrorCode();
+	
+	return true;
+}
+
+
+
+/*
+ * EVG55 GRIPPER CLEAR ERROR
+ */
+bool clearErrorService(evg55::ClearError::Request& request, evg55::ClearError::Response& response) {
+	ROS_INFO("Service ClearError called.");
+	
+	/* try executing command */
+	try {
+		gripper.clearError();
+	} catch (GripperException& e) {
+		ROS_ERROR (e.what());
+	}
+	
+	/* get gripper state */
+	response.state.header.stamp = ros::Time::now();
+	response.state.position = gripper.getPosition();
+	response.state.status = gripper.getStatus();
+	response.state.error = gripper.getErrorCode();
 	
 	return true;
 }
@@ -137,6 +184,7 @@ int main(int argc, char* argv[]) {
 	ros::ServiceServer movePositionSrv = n.advertiseService("move_position", movePositionService);
 	ros::ServiceServer openSrv = n.advertiseService("open", openService);
 	ros::ServiceServer closeSrv = n.advertiseService("close", closeService);
+	ros::ServiceServer clearSrv = n.advertiseService("clear_error", clearErrorService);
 	
 	// create publisher
 	ros::Publisher statePub = n.advertise<evg55::State>("state", 1000);

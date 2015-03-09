@@ -34,7 +34,7 @@ public:
 	static const float MaxOpening = 50.0; // mm
 	
 	//! Max gripper velocity
-	static const float MaxVelocity = 25.0; // mm/s
+	static const float MaxVelocity = 50.0; // mm/s
 	
 	//! Max gripping current
 	static const float MaxCurrent = 5.0; // A
@@ -133,21 +133,41 @@ public:
 	
 	/**
 	 * @brief Set gripper opening.
-	 * Waits till move completed.
+	 * Doesn't wait till move completed.
 	 * @param pos [in] position in mm
 	 * @return \b true if move succesful
 	 */
 	bool move(float pos);
+	
+	/**
+	 * @brief Set gripper opening.
+	 * Waits till move completed.
+	 * @param pos [in] position in mm
+	 * @return \b true if move succesful
+	 */
+	bool moveWait(float pos);
+	
 	/**
 	 * @brief Opens gripper.
 	 */
 	bool open();
 	
 	/**
+	 * @brief Opens gripper.
+	 * Waits till move completed.
+	 */
+	bool openWait();
+	
+	/**
+	 * @brief Closes gripper.
+	 */
+	bool close();
+	
+	/**
 	 * @brief Closes gripper.
 	 * Waits till move completed.
 	 */
-	bool close();
+	bool closeWait();
 	
 private:
 	// connection information

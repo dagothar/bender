@@ -59,6 +59,7 @@ add_service_files(
   MovePosition.srv
   Open.srv
   Close.srv
+  ClearError.srv
 )
 
 ## Generate actions in the 'action' folder
