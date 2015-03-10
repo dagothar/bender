@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <ur/Q.h>
 #include <ur/State.h>
+#include <ur/MoveQ.h>
 
 
 
@@ -19,6 +20,25 @@ USE_ROBWORK_NAMESPACE;
 using namespace rw;
 rwhw::URCallBackInterface URInterface;
 rwhw::UniversalRobotsRTLogging URRTInterface;
+
+
+
+/*
+ * UR MOVE TO Q SERVICE
+ */
+bool moveQService(ur::MoveQ::Request& request, ur::MoveQ::Response& response) {
+	ROS_INFO("Service MoveQ called.");
+	
+	/* try executing command */
+	rw::math::Q q(6);
+	for (int i = 0; i < 6; ++i) {
+		q[i] = request.target.data[i];
+	}
+	
+	URInterface.moveQ(q, request.speed);
+	
+	return true;
+}
 
 
 
@@ -81,11 +101,7 @@ int main(int argc, char* argv[])
 	URInterface.startCommunication(hostip, hostport, script);
 	
 	/* advertise services */
-	/*ros::ServiceServer urGetQService = nh.advertiseService("ur_get_q", ur_get_q);
-	ros::ServiceServer urStopService = nh.advertiseService("ur_stop", ur_stop);
-	ros::ServiceServer urMoveQService = nh.advertiseService("ur_move_to_q", ur_move_to_q);
-	ros::ServiceServer urMoveTService = nh.advertiseService("ur_move_to_t", ur_move_to_t);
-	ros::ServiceServer urServoQService = nh.advertiseService("ur_servo_to_q", ur_servo_to_q);*/
+	ros::ServiceServer moveQSrv = n.advertiseService("move_q", moveQService);
 	
 	/* advertise topics */
 	ros::Publisher statePub = n.advertise<ur::State>("state", 1000);
@@ -102,6 +118,14 @@ int main(int argc, char* argv[])
 		
 		/* create message and publish*/
 		ur::State msg;
+		
+		
+		msg.header.stamp = ros::Time::now();
+		if (qActual.size() >= 6) {
+			for (int i = 0; i < 6; ++i) {
+				msg.qActual.data[i] = qActual[i];
+			}
+		}
 				
 		statePub.publish(msg);
 		
