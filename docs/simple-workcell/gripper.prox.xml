@@ -1,7 +1,0 @@
-<CollisionSetup>
-	<Exclude>
-		<FramePair first="baza" second="lewy"/>
-		<FramePair first="baza" second="prawy"/>
-		<FramePair first="lewy" second="prawy"/>
-	</Exclude>
-</CollisionSetup>
