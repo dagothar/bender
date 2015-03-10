@@ -17,7 +17,7 @@ Table of Contents
 
 What is this?
 -------------
-TODO
+A respository for software used at the BENDER laboratory stand in 608.
 
 **Navigate:** [up](#what-is-this) - [toc](#table-of-contents)
 
@@ -26,19 +26,17 @@ Contents of the repository
 --------------------------
 The package contains:
 
-1. [`bender_plugin`](bender_plugin/README.md) - RWS plugin for controlling laboratory stand using GUI.
+1. [`bender_hardware`](bender_hardware/README.md) - low level soft for controlling devices.
 
-2. [`bender_ros`](bender_ros/README.md) - ROS node for communication with hardware present at the laboratory stand.
+2. [`bender_plugin`](bender_plugin/README.md) - RWS plugin for controlling laboratory stand using GUI.
 
-3. [`bender_wc`](bender_wc/README.md) - laboratory stand workcell in RW XML format.
+3. [`bender_ros`](bender_ros/README.md) - ROS node for communication with hardware present at the laboratory stand.
 
-4. [`docs`](docs/README.md) - documentation for the laboratory stand (**Please read this first.**).
+4. [`bender_wc`](bender_wc/README.md) - laboratory stand workcell in RW XML format.
 
-5. [`instrukcje`](instrukcje/README.md) - exercise instructions for students using the laboratory.
+5. [`docs`](docs/README.md) - documentation for the laboratory stand (**Please read this first.**).
 
 **For more detailed information, please see README files at respective directories** (just click on links).
-
-More information will also be available on wiki.
 
 **Navigate:** [up](#contents-of-the-repository) - [toc](#table-of-contents)
 
