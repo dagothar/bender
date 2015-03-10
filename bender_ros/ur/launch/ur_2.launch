@@ -15,6 +15,9 @@
 		<!-- robot script filename -->
 		<param name="script" value="urscript.ur"/>
 		
+		<!-- topic refresh ratio (per second) -->
+		<param name="rate" value="10"/>
+		
 	</node>
 	
 </launch>

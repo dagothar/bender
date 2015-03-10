@@ -145,11 +145,11 @@ bool clearErrorService(evg55::ClearError::Request& request, evg55::ClearError::R
 
 /* MAIN */
 int main(int argc, char* argv[]) {
-	// initialize node
+	/* initialize node */
 	ros::init(argc, argv, "evg55");
 	ros::NodeHandle n("~");
 	
-	// load parameters from the parameter server
+	/* load parameters from the parameter server */
 	string portName;
 	if (!n.getParam("port", portName)) {
 		ROS_ERROR("Parameter 'port' not found.");
@@ -174,19 +174,19 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	
-	// connect to and initialize the gripper
+	/* connect to and initialize the gripper */
 	SerialPort* port = new RWHWSerialPort();
 	port->open(portName, baudrate);
 	gripper.connect(port, moduleid);
 	
-	// advertise services
+	/* advertise services */
 	ros::ServiceServer homeSrv = n.advertiseService("home", homeService);
 	ros::ServiceServer movePositionSrv = n.advertiseService("move_position", movePositionService);
 	ros::ServiceServer openSrv = n.advertiseService("open", openService);
 	ros::ServiceServer closeSrv = n.advertiseService("close", closeService);
 	ros::ServiceServer clearSrv = n.advertiseService("clear_error", clearErrorService);
 	
-	// create publisher
+	/* advertise topics */
 	ros::Publisher statePub = n.advertise<evg55::State>("state", 1000);
 	
 	ROS_INFO("EVG55 node ready.");
