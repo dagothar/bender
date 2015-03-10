@@ -1,0 +1,18 @@
+<launch>
+	
+	<!-- Launch EVG55 node -->
+	<node pkg="evg55" type="evg55_node" name="gripper_2">
+		
+		<!-- serial port parameters -->
+		<param name="port" value="/dev/ttyUSB1"/>
+		<param name="baudrate" value="9600"/>
+		
+		<!-- module parameters -->
+		<param name="moduleid" value="12"/>
+		
+		<!-- topic refresh ratio (per second) -->
+		<param name="rate" value="10"/>
+		
+	</node>
+	
+</launch>
