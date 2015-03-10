@@ -5,10 +5,10 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 PROJECT(evg55)
 
 # optionally: point the find package in the direction of the robwork.
-SET(RobWork_DIR /home/dagothar/robwork/trunk/RobWork/cmake)
+SET(RobWork_DIR $ENV{RW_ROOT}/cmake)
 FIND_PACKAGE(RobWork REQUIRED)
 
-SET(RWHW_INCLUDES /home/dagothar/robwork/trunk/RobWorkHardware/src)
+SET(RWHW_INCLUDES $ENV{RWHW_ROOT}/src)
 INCLUDE_DIRECTORIES( ${ROBWORK_INCLUDE_DIRS} )
 LINK_DIRECTORIES( ${ROBWORK_LIBRARY_DIRS} )
 
@@ -17,7 +17,7 @@ SET(ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(USER_LIBRARIES )
 INCLUDE_DIRECTORIES(${ROOT}/src/ ${RWHW_INCLUDES})
-LINK_DIRECTORIES(/home/dagothar/robwork/trunk/RobWorkHardware/libs/Release)
+LINK_DIRECTORIES($ENV{RWHW_ROOT}/libs/Release)
 
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${ROOT}/bin" CACHE PATH "Runtime directory" FORCE)
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${ROOT}/libs" CACHE PATH "Library directory" FORCE)
