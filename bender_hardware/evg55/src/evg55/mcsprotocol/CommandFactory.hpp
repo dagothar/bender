@@ -27,6 +27,11 @@ public:
 	static Command makeAcknowledgementCommand(Byte id);
 	
 	/**
+	 * @brief Creates a stop command.
+	 */
+	static Command makeStopCommand(Byte id);
+	
+	/**
 	 * @brief Creates a toggle impulse messages command.
 	 */
 	static Command makeToggleImpulseMessagesCommand(Byte id);

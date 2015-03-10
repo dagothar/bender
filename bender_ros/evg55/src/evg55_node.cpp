@@ -8,6 +8,7 @@
 #include "evg55/Close.h"
 #include "evg55/MovePosition.h"
 #include "evg55/ClearError.h"
+#include "evg55/Stop.h"
 
 #include <evg55/gripper/EVG55.hpp>
 #include <evg55/serial/RWHWSerialPort.hpp>
@@ -143,6 +144,30 @@ bool clearErrorService(evg55::ClearError::Request& request, evg55::ClearError::R
 
 
 
+/*
+ * EVG55 GRIPPER STOP
+ */
+bool stopService(evg55::Stop::Request& request, evg55::Stop::Response& response) {
+	ROS_INFO("Service Stop called.");
+	
+	/* try executing command */
+	try {
+		gripper.stop();
+	} catch (GripperException& e) {
+		ROS_ERROR (e.what());
+	}
+	
+	/* get gripper state */
+	response.state.header.stamp = ros::Time::now();
+	response.state.position = gripper.getPosition();
+	response.state.status = gripper.getStatus();
+	response.state.error = gripper.getErrorCode();
+	
+	return true;
+}
+
+
+
 /* MAIN */
 int main(int argc, char* argv[]) {
 	/* initialize node */
@@ -185,6 +210,7 @@ int main(int argc, char* argv[]) {
 	ros::ServiceServer openSrv = n.advertiseService("open", openService);
 	ros::ServiceServer closeSrv = n.advertiseService("close", closeService);
 	ros::ServiceServer clearSrv = n.advertiseService("clear_error", clearErrorService);
+	ros::ServiceServer stopSrv = n.advertiseService("stop", stopService);
 	
 	/* advertise topics */
 	ros::Publisher statePub = n.advertise<evg55::State>("state", 1000);

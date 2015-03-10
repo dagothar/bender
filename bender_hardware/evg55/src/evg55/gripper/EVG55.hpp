@@ -169,6 +169,12 @@ public:
 	 */
 	bool closeWait();
 	
+	/**
+	 * @brief Stops the gripper.
+	 * This is not the emergency stop.
+	 */
+	bool stop();
+	
 private:
 	// connection information
 	serial::SerialPort* _port;

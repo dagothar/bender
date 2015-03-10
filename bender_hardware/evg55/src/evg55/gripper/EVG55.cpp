@@ -321,3 +321,15 @@ bool EVG55::closeWait() {
 	
 	return closed;
 }
+
+
+bool EVG55::stop() {
+	/* send Stop command */
+	Response response;
+	if (!MCSProtocol::emit(_port, CommandFactory::makeStopCommand(_id), response)) {
+		cout << "Failed to send Stop command" << endl;
+		return false;
+	}
+	
+	return true;
+}

@@ -20,6 +20,12 @@ Command CommandFactory::makeAcknowledgementCommand(Byte id) {
 	return cmd;
 }
 
+Command CommandFactory::makeStopCommand(Byte id) {
+	Command cmd(id, Command::Stop);
+	
+	return cmd;
+}
+
 Command CommandFactory::makeToggleImpulseMessagesCommand(Byte id) {
 	Command cmd(id, Command::ToggleImpulseMessages);
 	

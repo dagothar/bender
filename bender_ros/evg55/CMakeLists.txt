@@ -60,6 +60,7 @@ add_service_files(
   Open.srv
   Close.srv
   ClearError.srv
+  Stop.srv
 )
 
 ## Generate actions in the 'action' folder
