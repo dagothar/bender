@@ -1,0 +1,20 @@
+<launch>
+	
+	<!-- Launch UR node -->
+	<node pkg="ur" type="ur_node" name="ur_1">
+		
+		<!-- host TCP parameters -->
+		<param name="hostip" value="192.168.2.6"/>
+		<param name="hostport" value="30004"/>
+		
+		<!-- robot TCP parameters -->
+		<param name="robotip" value="192.168.2.8"/>
+		<param name="robotport" value="30001"/>
+		<param name="robotrtport" value="30003"/>
+		
+		<!-- robot script filename -->
+		<param name="script" value="urscript.ur"/>
+		
+	</node>
+	
+</launch>
