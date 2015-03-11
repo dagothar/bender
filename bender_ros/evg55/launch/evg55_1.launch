@@ -4,7 +4,7 @@
 	<node pkg="evg55" type="evg55_node" name="gripper_1">
 		
 		<!-- serial port parameters -->
-		<param name="port" value="/dev/ttyUSB0"/>
+		<param name="port" value="/dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0"/>
 		<param name="baudrate" value="9600"/>
 		
 		<!-- module parameters -->
