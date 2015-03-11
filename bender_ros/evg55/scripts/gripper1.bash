@@ -14,7 +14,7 @@ tmux split-window -v
 # Launch node
 tmux select-pane -t 1
 tmux send-keys "clear" C-m
-tmux send-keys "roslaunch ur evg55_1.launch" C-m
+tmux send-keys "roslaunch evg55 evg55_1.launch" C-m
 
 tmux select-pane -t 0
 tmux send-keys "clear" C-m
