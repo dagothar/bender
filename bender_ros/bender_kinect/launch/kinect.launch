@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- kinect calibration -->
+  <node name="kinect_calibration" pkg="tf" type="static_transform_publisher" args="0 -0.5 1.36 0 0.707 0 0.707 world camera_link 10"/>
+  
+  <!-- kinect -->
+  <include file="$(find freenect_launch)/launch/freenect.launch"/>
+  
+</launch>

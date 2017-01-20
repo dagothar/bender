@@ -1,22 +1,15 @@
 <launch>
 	
 	<!-- Launch UR node -->
-	<node pkg="ur" type="ur_node" name="ur_1">
+	<node pkg="ur" type="ur_node.py" name="ur_1">
 		
-		<!-- host TCP parameters -->
-		<param name="hostip" value="192.168.2.10"/>
-		<param name="hostport" value="30002"/>
-		
-		<!-- robot TCP parameters -->
-		<param name="robotip" value="192.168.2.11"/>
-		<param name="robotport" value="30001"/>
-		<param name="robotrtport" value="30003"/>
-		
-		<!-- robot script filename -->
-		<param name="script" value="$(find ur)/script/urscript.ur"/>
+		<!-- robot parameters -->
+		<param name="robot_ip" value="192.168.2.10"/>
+		<param name="robot_port" value="30001"/>
+		<param name="robot_data_port" value="30003"/>
 		
 		<!-- topic refresh ratio (per second) -->
-		<param name="rate" value="10"/>
+		<param name="rate" value="100"/>
 		
 	</node>
 	

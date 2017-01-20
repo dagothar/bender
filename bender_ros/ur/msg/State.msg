@@ -1,3 +1,4 @@
 std_msgs/Header header
 
-Q qActual
+Q q
+Q pos
